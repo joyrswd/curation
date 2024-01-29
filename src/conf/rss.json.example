@@ -1,0 +1,17 @@
+{
+    "sleeping": [0, 6],
+    "sites": [
+        {
+            "name": "サイト1の名称",
+            "url": "サイト1のトップページのURL",
+            "feed": "サイト1のRSSのURL",
+            "frequency": 5
+        },
+        {
+            "name": "サイト2の名称",
+            "url": "サイト2のトップページのURL",
+            "feed": "サイト2のRSSのURL",
+            "frequency": 30
+        }
+    ]
+}
