@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Next Curator
 
-## Getting Started
+## 概要
 
-First, run the development server:
+フィード（RSS）を収集して一覧表示するキュレーションサイトです。  
+Next.js（Typescript, React）入門のため作成しました。
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 特徴
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- フィードを自動収集
+- レスポンシブデザインの一覧画面
+- MeiliSearchを利用した全文検索
+- Next.jsはApp Routerを使用
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 開発環境
+- Docker Desktop 4.12.0
+- Ubuntu 22.04.3 LTS（Windows 11 WSL上）
+- Node.js v21.6.0
+- Next.js 14.1.0
+    - React 18.2.0
+    - TypeScript 5.3.3
+    - Tailwind CSS 4.0.0
+- Meilisearch 1.6.0
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+開発環境構築用のリポジトリも下記で公開しています。  
+https://github.com/joyrswd/curation-dev-environment
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+## システム構成
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## インストール
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## 今後の開発予定
+（順不同）
+- フッターに検索フォーム設置
+- ページング
+- テスト作成
+- 本番環境構築
+- リポジトリ公開
+- バッチのチューニング
+
+## ライセンス
+
+このプロジェクトは[MITライセンス](LICENSE)の下でライセンスされています。
+
