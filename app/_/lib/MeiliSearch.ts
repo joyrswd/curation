@@ -9,11 +9,11 @@ const indexName = process.env.CURATION_INDEX_NAME;
 if (!host || !apiKey || !indexName) {
   throw new Error('Environment variables are required');
 }
-const filterables = {'site' : 'siteName', 'date' : 'dateTimestamp', 'category':'category'};
+const filterables = {'site' : 'site', 'date' : 'timestamp', 'category':'category'};
 const client = new MeiliSearch({ host, apiKey });
 //client.deleteIndex(indexName);
 const index = client.index(indexName);
-index.updateSortableAttributes(['dateTimestamp', 'date']);
+index.updateSortableAttributes(['timestamp', 'site']);
 index.updateFilterableAttributes(Object.values(filterables));
 
 type StatsType = {
@@ -51,9 +51,10 @@ const parseImage = (content: string): string => {
 const parseKeyword = (keywords: string[]): string => {
   const result: string[] = [];
   keywords.forEach(keyword => {
-    result.push(`${keyword}`);
+    const decoded = decodeURIComponent(keyword);
+    result.push(`"${decoded}"`);
   });
-  return result.join(' ');
+  return result.join(' ') + " ヰ𛀀ゑヱゐ";//日本語判定用に固有文字を追加
 }
 
 const parseFilter = (params: Item): string => {
@@ -62,12 +63,14 @@ const parseFilter = (params: Item): string => {
     if (params[key]) {
       const param = params[key];
       if (key === 'date') {
-        const date = new Date(param);
+        const date = new Date(param + ' 00:00:00');
+        //日本時間にする
         const timestamp = date.getTime();
         const nextdayTimestamp = timestamp + (24*60*60*1000);
         filters.push(`${name} > ${timestamp} AND ${name} < ${nextdayTimestamp}`);
       } else {
-        filters.push(`${name} = "${param}"`);
+        const value = decodeURIComponent(param);
+        filters.push(`${name} = "${value}"`);
       }
     }
   }
@@ -75,15 +78,19 @@ const parseFilter = (params: Item): string => {
 }
 
 const convertToDocument = (item: Item, siteTitle: string, siteUrl: string): Item => {
-    // linkのURLをmd5でハッシュ化してidとする
-    item.id = crypto.createHash('md5').update(item.link).digest('hex');
-    item.siteName = siteTitle;
-    item.siteUrl = siteUrl;
-    item.category = item['dc:subject']??'';
-    item.intro = parseIntro(item['content:encoded']);
-    item.image = parseImage(item['content:encoded']);
-    item.dateTimestamp = new Date(item.date).getTime();
-    return item;
+    return {
+      // linkのURLをmd5でハッシュ化してidとする
+      id: crypto.createHash('md5').update(item.link).digest('hex'),
+      title: item.title,
+      link: item.link,
+      date: item.date,
+      intro: parseIntro(item['content:encoded']),
+      image: parseImage(item['content:encoded']),
+      category: item['dc:subject']??'',
+      site: siteTitle,
+      home: siteUrl,
+      timestamp: new Date(item.date).getTime(),
+    };
 }
 
 export default {
@@ -115,8 +122,26 @@ export default {
     try {
       const keywordString = (keyword) ? parseKeyword(keyword) : '';
       const filterString = (params) ? parseFilter(params) : '';
-      const results = await index.search(keywordString, { limit: 24, sort: ['dateTimestamp:desc'], filter: [filterString] });
+      const options: any = { limit: 24, sort: ['timestamp:desc'], attributesToSearchOn: ['title', 'intro', 'category']};
+      if (filterString) {
+        options.filter = [filterString];
+      }
+      const results = await index.search(keywordString, options);
       return results.hits;
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  },
+  sites: async (): Promise<string[]> => {
+    'use server'
+    try {
+      const results = await index.searchForFacetValues({ facetName:'site' });
+      const sites:string[] = [];
+      results.facetHits.forEach((facetHit) => {
+        sites.push(facetHit.value);
+      });
+      return sites;
     } catch (error) {
       console.error(error);
       return [];
