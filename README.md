@@ -35,7 +35,6 @@ https://github.com/joyrswd/curation-dev-environment
 
 ## 今後の開発予定
 （順不同）
-- フッターに検索フォーム設置
 - ページング
 - テスト作成
 - 本番環境構築

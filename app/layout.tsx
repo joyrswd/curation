@@ -1,6 +1,9 @@
 import 'tailwindcss/tailwind.css'
+import './global.css'
 import Link from 'next/link'
 import { Metadata } from 'next'
+import SearchForm from '@/_/components/searchform'
+import Datalist from '@/_/components/datalist'
 
 // either Static metadata
 export const metadata: Metadata = {
@@ -23,10 +26,19 @@ export default function RootLayout({
           </div>
         </main>
         <footer className="text-gray-600 body-font fixed inset-x-0 bottom-0">
-          <div className="container px-5 py-8 mx-auto flex items-center sm:flex-row flex-col">
-            <Link className="flex title-font font-medium  text-xl items-center justify-center text-gray-900" href="/">
-              {process.env.CURATION_APP_NAME}
-            </Link>
+          <div>
+            <div id="logo">
+              <Link href="/">
+                {process.env.CURATION_APP_NAME}
+              </Link>
+            </div>
+            <div>
+              <label><input type="checkbox" id="toggle" /></label>
+              <Datalist id="site-name" />
+            </div>
+            <div>
+              <SearchForm />
+            </div>
           </div>
         </footer>
       </body>

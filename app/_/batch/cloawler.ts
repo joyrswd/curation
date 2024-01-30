@@ -8,9 +8,8 @@ const isSleeping = (sleeping:number[]) => {
     const start = sleeping[0];
     const end = sleeping[1];
     const now = new Date();
-    const minutes = now.getMinutes();
     const hour = now.getHours();
-    return (start <= hour && hour < end && minutes % 30 !== 0);
+    return (start <= hour && hour < end);
 }
 
 type SiteType = {
@@ -20,7 +19,7 @@ type SiteType = {
 }
 
 const isSkip = (site: SiteType, gap: number) => {
-    if (site.skip) {
+    if ((site.skip??false)!==false) {
         return true;
     }
     const frequency = site.frequency;
@@ -28,8 +27,8 @@ const isSkip = (site: SiteType, gap: number) => {
     return ((frequency == 0 && minutes != 0) || (frequency > 0 && minutes % frequency > gap));
 }
 
-const loadFeed = async (site: SiteType, gap: number, sleeping: boolean) => {
-    if (!sleeping && isSkip(site, gap)) {
+const loadFeed = async (site: SiteType, gap: number) => {
+    if (isSkip(site, gap)) {
         return;
     }
     let feed: any;
@@ -49,13 +48,14 @@ const loadFeed = async (site: SiteType, gap: number, sleeping: boolean) => {
 const main = async (starter: number) => {
     const period: number[] = configs.sleeping;
     const sleeping = isSleeping(period);
-    if (sleeping) {
-        return;
-    }
     for (const site of configs.sites) {
+        if (sleeping) {
+            //sleeping中はすべて1時間間隔にする
+            site.frequency = 0;
+        }
         try {
             // メモリー不足を考慮し逐次実行
-            await loadFeed(site, (counter-starter), sleeping);
+            await loadFeed(site, (counter-starter));
         } catch (error) {
             console.error(`Failed to load feed ${site.feed}: ${error}`);
         }

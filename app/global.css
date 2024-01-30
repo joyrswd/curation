@@ -1,0 +1,134 @@
+main {
+    padding-bottom: 3rem;
+}
+footer{
+    background-color: #333;
+    color: #fff;
+    padding: 0.5rem;
+    text-align: center;
+    transition: 0.5s;
+}
+
+footer #logo {
+    margin-bottom: 0.5rem;
+}
+
+footer>div:has(#toggle) {
+    display: grid;
+    grid-template-columns: auto 1rem;
+    grid-template-rows: auto 1fr;
+    transition: grid-template-rows .5s ease;
+}
+
+footer>div:has(#toggle:checked) {
+    grid-template-rows: auto 0fr;
+}
+
+footer>div:has(#toggle)>* {
+    overflow-y: hidden;
+}
+
+footer>div:has(#toggle)>*:last-child {
+    grid-column: span 2;
+}
+
+footer #logo a{
+    color: #fff;
+    text-decoration: none;
+    font-family: 'Helvetica', 'Robotic', 'Arial', sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: transparent;
+    background : black;
+    -webkit-background-clip : text;
+    -moz-background-clip : text;
+    background-clip : text;
+	text-shadow : 
+		0 0 1px rgba(255,255,255,0.05),
+		1px 2px rgba(255,255,255,0.3);
+    transition: 0.2s ease;
+}
+
+footer #logo a:hover{
+	text-shadow : 
+        0 0 1px rgba(255,255,255,0.05),
+        1px 2px 3px rgba(255,255,255,0.5);  
+}
+
+footer form{
+    display:grid;
+    grid-template-columns: auto min-content;
+    grid-template-rows: 1fr;
+    grid-gap: 0.5rem;
+    margin: auto;
+}
+
+footer form p:has([name="keyword"]){
+    grid-column: 1;
+    grid-row: 1;
+}
+
+footer form p:has([name="site"]){
+    grid-column: 1;
+    grid-row: 2;
+    display: flex;
+}
+
+footer form p:has([type="submit"]){
+    grid-column: 2;
+    grid-row: span 2;
+    display: flex;
+    align-items: center;
+}
+
+footer form input[name="keyword"] {
+    width: 100%;
+}
+
+footer form input[name="date"] {
+    width: 12rem;
+    margin-right: 0.5rem;
+}
+
+footer form input[name="site"] {
+    width: 100%;
+}
+
+footer div:has(#toggle) {
+    font-size: 1rem;
+}
+
+footer input#toggle {
+    display: none;
+}
+
+footer label:has(#toggle) {
+    display: block;
+    position: relative;
+    width: 1em;
+    height: 1.8em;
+    border-radius: 1em;
+    background-color: rgb(59,130,246);
+    cursor: pointer;
+    transition: 0.5s;
+}
+
+footer label:has(#toggle:checked) {
+    background-color: darkslategray;
+}
+
+footer label:has(#toggle)::before {
+    position: absolute;
+    top: 0.05em;
+    left: 0.05em;
+    width: calc(1em - 0.1em);
+    height: calc(1em - 0.1em);
+    border-radius: calc(1em - 0.1em);
+    background-color: #fff;
+    transition: 0.5s;
+    content: "";
+}
+
+footer label:has(#toggle:checked)::before {
+    top: calc(100% - 1em + 0.05em);
+}
