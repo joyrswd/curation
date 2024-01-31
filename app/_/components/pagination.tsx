@@ -29,7 +29,7 @@ export default ({ pages }: { pages: any }) => {
                 </Link>
             </>)}
             <div className="flex items-center gap-x-1">
-                <input type="number" onChange={jumpPage} min={1} max={pages.last} name="page" defaultValue={pages.current} className="min-h-[24px] ps-2 text-center text-black min-h-[24px] min-w-[24px] border border-gray-200 text-gray-800 text-sm rounded-full focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none" />
+                <input type="number" onChange={jumpPage} min={1} max={pages.last} name="page" value={pages.current} className="min-h-[24px] ps-2 text-center text-black min-h-[24px] min-w-[24px] border border-gray-200 text-gray-800 text-sm rounded-full focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none" />
                 <span className="min-h-[32px] flex justify-center items-center text-gray-500 py-1.5 px-1.5 text-sm dark:text-gray-500">/</span>
                 <span className="min-h-[32px] flex justify-center items-center text-gray-500 py-1.5 px-1.5 text-sm dark:text-gray-500">{pages.last}</span>
             </div>

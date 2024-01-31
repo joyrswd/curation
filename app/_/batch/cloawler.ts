@@ -4,7 +4,7 @@ import MeiliSearch from '../lib/MeiliSearch';
 import Parser from 'rss-parser';
 const args = process.argv.slice(2);
 const duration:number = (args[0])? 0 : 60;
-const configPath = '../conf/rss.json';
+const configPath = '../conf/rss.ts';
 const parser = new Parser({ 'customFields': { item: ['dc:subject', 'category'] } });
 let counter = 0;
 
@@ -53,14 +53,12 @@ const loadFeed = async (site: SiteType, gap: number) => {
 
 const loadConfig = async ():Promise<any> => {
     try{
-        const data = await fs.promises.readFile(path.resolve(__dirname, configPath), 'utf8');
-        return JSON.parse(data);
+        const contents = await import(configPath);
+        return contents.default;
     }catch(err){
-        console.error(err);
-        return;
+        throw new Error(`Failed to load config file ${configPath}: ${err}`);
     }
 }
-
 
 const main = async (starter: number) => {
     const configs = await loadConfig();

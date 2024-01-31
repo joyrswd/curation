@@ -26,8 +26,6 @@ type Item = {
   [key: string]: any;
 };
 
-type SearchResult = [any, number];
-
 const parseIntro = (content: string): string => {
   // contentからHTMLタグを除去
   const regex = /<("[^"]*"|'[^']*'|[^'">])*>/g;
@@ -141,7 +139,7 @@ export default {
       console.error(error);
     }
   },
-  find: async (keyword?: string[], params?: URLSearchParams): Promise<Pagination|null> => {
+  find: async (keyword?: string[], params?: any): Promise<Pagination|null> => {
     'use server'
     try {
       const keywordString = (keyword) ? parseKeyword(keyword) : '';
