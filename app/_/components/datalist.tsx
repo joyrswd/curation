@@ -1,7 +1,7 @@
 
 import MeiliSearch from '@/_/lib/MeiliSearch';
 
-export default async ({id}:{id:string}) => {
+async function Datalist ({id}:{id:string}) {
     const sites = await MeiliSearch.sites();
     return (
         <datalist id={id}>
@@ -9,3 +9,5 @@ export default async ({id}:{id:string}) => {
         </datalist>
     );
 }
+
+export default Datalist

@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 
 
-export default ({ pages }: { pages: any }) => {
+function Pagination ({ pages }: { pages: any }) {
     const router = useRouter();
     const params = useSearchParams();
     const keyword = usePathname().split('/').slice(2).join('');
@@ -42,3 +42,5 @@ export default ({ pages }: { pages: any }) => {
         </nav>
     );
 }
+
+export default Pagination;
