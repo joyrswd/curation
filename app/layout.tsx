@@ -18,29 +18,29 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body>
-        <main className="text-gray-600 body-font">
-          <div className="container px-5 py-24 mx-auto">
+        <div id="wrapper" className="text-gray-600 body-font">
+          <main className="container px-5 py-12 mx-auto">
             <div className="flex flex-wrap -mx-4 -my-8 justify-center">
-              {children}
+                {children}
             </div>
-          </div>
-        </main>
-        <footer className="text-gray-600 body-font fixed inset-x-0 bottom-0">
-          <div>
-            <div id="logo">
-              <Link href="/">
-                {process.env.CURATION_APP_NAME}
-              </Link>
-            </div>
+          </main>
+          <footer>
             <div>
-              <label><input type="checkbox" id="toggle" /></label>
-              <Datalist id="site-name" />
+              <div id="logo">
+                <Link href="/">
+                  {process.env.CURATION_APP_NAME}
+                </Link>
+              </div>
+              <div>
+                <label><input type="checkbox" id="toggle" /></label>
+                <Datalist id="site-name" />
+              </div>
+              <div>
+                <SearchForm />
+              </div>
             </div>
-            <div>
-              <SearchForm />
-            </div>
-          </div>
-        </footer>
+          </footer>
+        </div>
       </body>
     </html>
   )
