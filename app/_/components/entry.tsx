@@ -27,14 +27,14 @@ const Entry: React.FC<EntryProps> = ({ record }) => {
                 </div>
                 <div className="self-end w-full flex md:items-end">
                     <div className='w-12 mr-3 text-center text-sm'>
-                        <Link href={{ pathname: 'find', query: { date: date } }} className='flex md:flex-col'>
+                        <Link href={{ pathname: '/find', query: { date: date } }} className='flex md:flex-col'>
                             <span className="text-gray-500 md:pb-2 md:mb-2 md:border-b-2 border-gray-200">{month}</span>
                             <span className="font-medium title-font ml-1 md:ml-0 md:text-gray-800 md:text-lg md:leading-none">{day}</span>
                         </Link>
                     </div>
                     <div className="w-full text-end text-sm">
-                        <p className='float-left md:float-none'><Link href={{ pathname: 'find', query: { category: record.category } }}>{record.category}</Link></p>
-                        <p><Link className="title-font md:font-medium text-gray-500" href={{ pathname: 'find', query: { site: record.site } }}>{record.site}</Link></p>
+                        <p className='float-left md:float-none'><Link href={{ pathname: '/find', query: { category: record.category } }}>{record.category}</Link></p>
+                        <p><Link className="title-font md:font-medium text-gray-500" href={{ pathname: '/find', query: { site: record.site } }}>{record.site}</Link></p>
                     </div>
                 </div>
             </div>

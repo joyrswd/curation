@@ -10,8 +10,8 @@ if (!host || !apiKey || !indexName) {
   throw new Error('Environment variables are required');
 }
 const filterables = {'site' : 'site', 'date' : 'timestamp', 'category':'category'};
+const pageLimit = 24;
 const client = new MeiliSearch({ host, apiKey });
-//client.deleteIndex(indexName);
 const index = client.index(indexName);
 index.updateSortableAttributes(['timestamp', 'site']);
 index.updateFilterableAttributes(Object.values(filterables));
@@ -26,17 +26,18 @@ type Item = {
   [key: string]: any;
 };
 
-type SearchResult = Array<{
-  [key: string]: any;
-}>;
+type SearchResult = [any, number];
 
 const parseIntro = (content: string): string => {
   // contentからHTMLタグを除去
   const regex = /<("[^"]*"|'[^']*'|[^'">])*>/g;
-  const text = content.replace(regex, '');
+  const urlText = content.replace(regex, '');
   // urlを除去
   const urlRegex = /(https?:\/\/[^\s]+)/g;
-  return text.replace(urlRegex, '');
+  const nlText = urlText.replace(urlRegex, '');
+  // 連続した改行を除去
+  const text = nlText.replace(/\n\s*\n/g, '\n\n');
+  return text;
 }
 
 const parseImage = (content: string): string => {
@@ -78,19 +79,42 @@ const parseFilter = (params: Item): string => {
 }
 
 const convertToDocument = (item: Item, siteTitle: string, siteUrl: string): Item => {
+    const pubDate = item.pubDate?? item.date;
     return {
       // linkのURLをmd5でハッシュ化してidとする
       id: crypto.createHash('md5').update(item.link).digest('hex'),
       title: item.title,
       link: item.link,
-      date: item.date,
+      date: new Date(pubDate).toISOString(),
       intro: parseIntro(item['content:encoded']),
       image: parseImage(item['content:encoded']),
-      category: item['dc:subject']??'',
+      category: item.category??item['dc:subject']??'',
       site: siteTitle,
       home: siteUrl,
-      timestamp: new Date(item.date).getTime(),
+      timestamp: new Date(pubDate).getTime(),
     };
+}
+
+type Pagination = {
+  result: boolean;
+  items: any[];
+  current: number;
+  previous: number;
+  next: number;
+  last: number;
+};
+
+const convertToPagination = (results: any): Pagination => {
+  const current = results.page;
+  const last = results.totalPages;
+  return {
+    result : (results.hits.length > 0),
+    items: results.hits,
+    current: current,
+    previous: (current > 1) ? current - 1 : 0,
+    next: (current < last) ? current + 1 : 0,
+    last: last,
+  };
 }
 
 export default {
@@ -117,20 +141,24 @@ export default {
       console.error(error);
     }
   },
-  find: async (keyword?: string[], params?: URLSearchParams): Promise<SearchResult> => {
+  find: async (keyword?: string[], params?: URLSearchParams): Promise<Pagination|null> => {
     'use server'
     try {
       const keywordString = (keyword) ? parseKeyword(keyword) : '';
       const filterString = (params) ? parseFilter(params) : '';
-      const options: any = { limit: 24, sort: ['timestamp:desc'], attributesToSearchOn: ['title', 'intro', 'category']};
+      const current = (params && params['page']) ? parseInt(params['page']) : 1;
+      if(isNaN(current)) {
+        throw new Error('Invalid page number');
+      }
+      const options: any = { page: current, hitsPerPage: pageLimit, sort: ['timestamp:desc'], attributesToSearchOn: ['title', 'intro', 'category']};
       if (filterString) {
         options.filter = [filterString];
       }
       const results = await index.search(keywordString, options);
-      return results.hits;
+      return convertToPagination(results);
     } catch (error) {
       console.error(error);
-      return [];
+      return null;
     }
   },
   sites: async (): Promise<string[]> => {

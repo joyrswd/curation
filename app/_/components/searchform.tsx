@@ -5,7 +5,7 @@ import { FormEvent } from 'react';
 export default function Form() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const keyword = usePathname().split('/').slice(2).join('');
+    const requestKeyword = usePathname().split('/').slice(2).join('');
     async function searchFeed(formData: FormEvent<HTMLFormElement>) {
         const params: string[][] = [];
         let keyword = '';
@@ -29,7 +29,7 @@ export default function Form() {
     return (
         <form action={searchFeed} className="md:max-w-prose">
             <p>
-                <input name="keyword" defaultValue={decodeURIComponent(keyword)} type="text" placeholder="キーワード" className="border border-gray-300 bg-white h-7 px-5 pr-16 rounded-lg text-sm focus:outline-none"/>
+                <input name="keyword" defaultValue={decodeURIComponent(requestKeyword)} type="text" placeholder="キーワード" className="border border-gray-300 bg-white h-7 px-5 pr-16 rounded-lg text-sm focus:outline-none"/>
             </p>
             <p>
                 <input type="date" defaultValue={searchParams.get('date')} name="date" className='border border-gray-300 bg-white h-7 rounded-lg text-sm focus:outline-none' />

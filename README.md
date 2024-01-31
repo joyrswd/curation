@@ -35,7 +35,6 @@ https://github.com/joyrswd/curation-dev-environment
 
 ## 今後の開発予定
 （順不同）
-- ページング
 - テスト作成
 - 本番環境構築
 - リポジトリ公開
