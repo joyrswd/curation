@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link'
+import Image from 'next/image'
 
 interface EntryProps {
     record: {
@@ -17,7 +18,7 @@ const Entry: React.FC<EntryProps> = ({ record }) => {
             <div className="h-full flex flex-col">
                 <div className="leading-none flex">
                     <p className="w-12 text-center self-center mr-3">
-                        {record.image && <img alt="blog" src={record.image} className="w-7 h-7 m-auto md:w-10 md:h-10 mb-1 rounded-full flex-shrink-0 object-cover object-center" />}
+                        {record.image && <Image alt="blog" src={record.image} width={100} height={100} className="w-7 h-7 m-auto md:w-10 md:h-10 mb-1 rounded-full flex-shrink-0 object-cover object-center" />}
                         <span className="text-gray-500 text-sm">{time}</span>
                     </p>
                     <a href={record.link} target="feed" className='w-full'><h1 className="title-font self-center text-l md:text-xl font-medium text-gray-900">{record.title}</h1></a>

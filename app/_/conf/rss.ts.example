@@ -1,4 +1,4 @@
-export default {
+const Rss = {
     sleeping: [0, 6], //　夜間など更新頻度を下げる時間帯 [開始時間, 終了時間]、この間はすべて1時間おきになる
     sites: [
         {
@@ -16,3 +16,4 @@ export default {
         }
     ]
 };
+export default Rss;

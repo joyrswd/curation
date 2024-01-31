@@ -115,7 +115,7 @@ const convertToPagination = (results: any): Pagination => {
   };
 }
 
-export default {
+const Client ={
 
   upsert: async (item: Item, siteTitle: string, siteUrl: string) => {
     'use server'
@@ -175,3 +175,4 @@ export default {
   }
 };
 
+export default Client;
