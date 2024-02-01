@@ -19,6 +19,7 @@
     "react": "^18",
     "react-dom": "^18",
     "rss-parser": "^3.13.0",
+    "sharp": "^0.33.2",
     "ts-node": "^10.9.2"
   },
   "devDependencies": {
