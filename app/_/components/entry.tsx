@@ -1,14 +1,12 @@
+'use server';
 import React from 'react';
 import Link from 'next/link'
 import Image from 'next/image'
+import MeiliSearch from '@/_/lib/MeiliSearch';
 
-interface EntryProps {
-    record: {
-        [key: string]: any;
-    };
-}
-
-const Entry: React.FC<EntryProps> = ({ record }) => {
+const Entry = async ({ id }: { id: string }) => {
+    const record = await MeiliSearch.get(id);
+    if (!record) return null;
     const month = new Date(record.date).toLocaleString('en-us', { month: 'short' });
     const day = new Date(record.date).toLocaleString('en-us', { day: '2-digit' });
     const time = new Date(record.date).toLocaleString('ja-JP', { hour: '2-digit', minute: '2-digit' });

@@ -95,7 +95,7 @@ const convertToDocument = (item: Item, siteTitle: string, siteUrl: string): Item
 
 type Pagination = {
   result: boolean;
-  items: any[];
+  ids: string[];
   current: number;
   previous: number;
   next: number;
@@ -107,7 +107,7 @@ const convertToPagination = (results: any): Pagination => {
   const last = results.totalPages;
   return {
     result : (results.hits.length > 0),
-    items: results.hits,
+    ids: results.hits.map((hit: any) => hit.id),
     current: current,
     previous: (current > 1) ? current - 1 : 0,
     next: (current < last) ? current + 1 : 0,
@@ -139,10 +139,10 @@ const Client ={
       console.error(error);
     }
   },
-  find: async (keyword?: string[], params?: any): Promise<Pagination|null> => {
+  find: async (params?: any): Promise<Pagination|null> => {
     'use server'
     try {
-      const keywordString = (keyword) ? parseKeyword(keyword) : '';
+      const keywordString = (params?.keyword) ? parseKeyword(params.keyword) : '';
       const filterString = (params) ? parseFilter(params) : '';
       const current = (params && params['page']) ? parseInt(params['page']) : 1;
       if(isNaN(current)) {
@@ -154,6 +154,16 @@ const Client ={
       }
       const results = await index.search(keywordString, options);
       return convertToPagination(results);
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  },
+  get: async (id: string): Promise<Item|null> => {
+    'use server'
+    try {
+      const results = await index.getDocument(id);
+      return results;
     } catch (error) {
       console.error(error);
       return null;
