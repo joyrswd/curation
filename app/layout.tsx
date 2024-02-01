@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { Metadata } from 'next'
 import SearchForm from '@/_/components/searchform'
 import Datalist from '@/_/components/datalist'
+import { Suspense } from 'react'
 
 // either Static metadata
 export const metadata: Metadata = {
@@ -36,7 +37,9 @@ export default function RootLayout({
                 <Datalist id="site-name" />
               </div>
               <div>
-                <SearchForm />
+                <Suspense>
+                  <SearchForm />
+                </Suspense>
               </div>
             </div>
           </footer>
