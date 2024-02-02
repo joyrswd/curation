@@ -9,6 +9,7 @@ import { Suspense } from 'react'
 // either Static metadata
 export const metadata: Metadata = {
   title: process.env.CURATION_APP_NAME,
+  description: process.env.CURATION_APP_ABOUT,
 }
 
 export default function RootLayout({
@@ -33,12 +34,12 @@ export default function RootLayout({
                 </Link>
               </div>
               <div>
-                <label><input type="checkbox" id="toggle" /></label>
-                <Datalist id="site-name" />
+                <label><input type="checkbox" id="toggle" defaultChecked /></label>
               </div>
               <div>
                 <Suspense>
                   <SearchForm />
+                  <Datalist id="site-name" />
                 </Suspense>
               </div>
             </div>
