@@ -5,6 +5,7 @@ import { Metadata } from 'next'
 import SearchForm from '@/_/components/searchform'
 import Datalist from '@/_/components/datalist'
 import { Suspense } from 'react'
+import { GoogleTagManager } from '@next/third-parties/google'
 
 // either Static metadata
 export const metadata: Metadata = {
@@ -46,6 +47,7 @@ export default function RootLayout({
           </footer>
         </div>
       </body>
+      {process.env.CURATION_APP_GTM_ID && (<GoogleTagManager gtmId={process.env.CURATION_APP_GTM_ID} />)}
     </html>
   )
 }
