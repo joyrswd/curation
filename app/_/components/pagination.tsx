@@ -24,7 +24,7 @@ function Pagination ({ pages }: { pages: any }) {
     }
 
     return (
-        <nav className="flex gap-x-1 w-full justify-center">
+        <nav className="flex gap-x-1 w-full justify-center my-3">
             {pages.previous > 0 && (<>
                 <Link href={{ query: { ...query, page: pages.previous } }} className="min-h-[1rem] min-w-[1rem] inline-flex justify-center items-center hover:opacity-50 mr-1.5">
                     <svg className="flex-shrink-0 w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#999999" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
