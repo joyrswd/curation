@@ -1,6 +1,7 @@
 import * as dotenv from 'dotenv';
 import * as crypto from 'crypto';
 import { MeiliSearch } from 'meilisearch';
+import sanitizeHtml from 'sanitize-html';
 dotenv.config();
 
 const host = process.env.MEILI_HTTP_ADDR;
@@ -28,8 +29,7 @@ type Item = {
 
 const parseIntro = (content: string): string => {
   // contentからHTMLタグを除去
-  const regex = /<("[^"]*"|'[^']*'|[^'">])*>/g;
-  const urlText = content.replace(regex, '');
+  const urlText = sanitizeHtml(content, {allowedTags: [], allowedAttributes: {}});
   // urlを除去
   const urlRegex = /(https?:\/\/[^\s]+)/g;
   const nlText = urlText.replace(urlRegex, '');
