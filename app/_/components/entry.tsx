@@ -19,10 +19,10 @@ const Entry = async ({ id }: { id: string }) => {
                         {record.image && <Image alt="blog" src={record.image} width={100} height={100} className="w-7 h-7 m-auto md:w-10 md:h-10 rounded-full flex-shrink-0 object-cover object-center" />}
                         <span className="text-gray-500 text-xs">{time}</span>
                     </p>
-                    <a href={record.link} target="feed" className='w-full flex'><h1 className="self-center w-full pb-2.5 title-font font-medium text-gray-700 text-sm md:text-lg">{record.title}</h1></a>
+                    <a href={record.link} target="feed" className='w-full flex'><h1 className="self-center w-full pb-2.5 title-font font-medium text-gray-700 break-all text-sm md:text-lg">{record.title}</h1></a>
                 </div>
                 <div className="m-2 pb-4 grow hidden md:block">
-                    <p className="leading-relaxed text-sm"><a href={record.link} target="feed">{record.intro.substring(0, 200)}</a></p>
+                    <p className="break-all leading-relaxed text-sm"><a href={record.link} target="feed">{record.intro.substring(0, 200)}</a></p>
                 </div>
                 <div className="self-end w-full flex md:items-end text-xs mt-1">
                     <div className='w-12 mr-3 text-center'>
