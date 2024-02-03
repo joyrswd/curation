@@ -17,14 +17,36 @@ const index = client.index(indexName);
 index.updateSortableAttributes(['timestamp', 'site']);
 index.updateFilterableAttributes(Object.values(filterables));
 
-type StatsType = {
+export type StatsType = {
   numberOfDocuments: number;
   isIndexing: boolean;
   fieldsDistribution?: Record<string, number>;
 };
 
-type Item = {
+export type Feed = {
   [key: string]: any;
+};
+
+export type Pagination = {
+  result: boolean;
+  ids: string[];
+  current: number;
+  previous: number;
+  next: number;
+  last: number;
+};
+
+export type Document = {
+  id: string;
+  title: string;
+  link: string;
+  date: string;
+  intro: string;
+  image: string;
+  category: string;
+  site: string;
+  home: string;
+  timestamp: number;
 };
 
 export const parseIntro = (content: string): string => {
@@ -34,7 +56,7 @@ export const parseIntro = (content: string): string => {
   const urlRegex = /(https?:\/\/[^\s]+)/g;
   const nlText = urlText.replace(urlRegex, '');
   // 連続した改行を除去
-  const text = nlText.replace(/\n\s*\n/g, '\n\n');
+  const text = nlText.replace(/[\n\s*\n]+/g, '\n');
   return text;
 }
 
@@ -56,7 +78,7 @@ export const parseKeyword = (keywords: string[]): string => {
   return result.join(' ') + " ヰ𛀀ゑヱゐ";//日本語判定用に固有文字を追加
 }
 
-export const parseFilter = (params: Item): string => {
+export const parseFilter = (params: {[key: string]: any}): string => {
   const filters: string[] = [];
   for (const [key, name] of Object.entries(filterables)) {
     if (params[key]) {
@@ -76,7 +98,7 @@ export const parseFilter = (params: Item): string => {
   return filters.join(' AND ');
 }
 
-export const convertToDocument = (item: Item, siteTitle: string, siteUrl: string): Item => {
+export const convertToDocument = (item: Feed, siteTitle: string, siteUrl: string): Document => {
   const pubDate = item.pubDate ?? item.date;
   return {
     // linkのURLをmd5でハッシュ化してidとする
@@ -93,15 +115,6 @@ export const convertToDocument = (item: Item, siteTitle: string, siteUrl: string
   };
 }
 
-export type Pagination = {
-  result: boolean;
-  ids: string[];
-  current: number;
-  previous: number;
-  next: number;
-  last: number;
-};
-
 export const convertToPagination = (results: any): Pagination => {
   const current = results.page;
   const last = results.totalPages;
@@ -115,7 +128,7 @@ export const convertToPagination = (results: any): Pagination => {
   };
 }
 
-export const upsert = async (item: Item, siteTitle: string, siteUrl: string) => {
+export const upsert = async (item: Feed, siteTitle: string, siteUrl: string) => {
   'use server'
   if (!item.link) {
     console.error('Item link is missing');
@@ -160,7 +173,7 @@ export const find = async (params?: any): Promise<Pagination | null> => {
   }
 };
 
-export const get = async (id: string): Promise<Item | null> => {
+export const get = async (id: string): Promise<Record<string, any> | null> => {
   'use server'
   try {
     const results = await index.getDocument(id);
