@@ -173,11 +173,12 @@ export const find = async (params?: any): Promise<Pagination | null> => {
   }
 };
 
-export const get = async (id: string): Promise<Record<string, any> | null> => {
+export const get = async (id: string): Promise<Document | null> => {
   'use server'
   try {
-    const results = await index.getDocument(id);
-    return results;
+    const result = await index.getDocument(id);
+    const document = result as Document;
+    return document;
   } catch (error) {
     console.error(error);
     return null;
@@ -198,5 +199,3 @@ export const sites = async (): Promise<string[]> => {
     return [];
   }
 };
-
-export default { upsert, stats, find, get, sites };
