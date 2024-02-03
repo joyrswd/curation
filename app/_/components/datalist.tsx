@@ -1,13 +1,19 @@
 
 import {sites} from '@/_/lib/MeiliSearch';
 
-async function Datalist ({id}:{id:string}) {
+//　テストに対応するため、Container/Presentational Components パターンにする
+
+export async function Container ({id}:{id:string}) {
     const list = await sites();
+    return <Presentaion list={list} id={id} />;
+}
+
+export const Presentaion = ({list, id}:{list:string[], id:string}) => {
     return (
         <datalist id={id}>
-            {list.map((site:string, key:number) => (<option key={key} value={site}>{site}</option>))}
+            {list.map((i) => <option key={i} value={i}>{i}</option>)}
         </datalist>
     );
 }
 
-export default Datalist
+export default Container
