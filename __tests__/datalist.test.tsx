@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 import { render, screen } from '@testing-library/react';
 import { describe } from 'node:test';
-import {Container, Presentaion} from '@/_/components/datalist';
+import {DatalistContainer, DatalistPresenter} from '@/_/components/datalist';
 
 
 const dummyData = ['site1', 'site2', 'site3'];
@@ -10,7 +10,7 @@ jest.mock('@/_/lib/MeiliSearch', () => {return {sites: async () => dummyData};})
 
 describe('Presentation', () => {
     it('datalist表示の確認', async () => {
-        render(<Presentaion list={dummyData} id="site-name" />);
+        render(<DatalistPresenter list={dummyData} id="site-name" />);
         const datalist = screen.getByRole('listbox', { hidden: true });
         expect(datalist).toBeInTheDocument();
         expect(datalist).toHaveAttribute('id', 'site-name');
@@ -23,8 +23,8 @@ describe('Presentation', () => {
 
 describe('Container', () => {
     it('datalist取得の確認', async () => {
-        const {type, props} = await Container({id: 'site-name'});
-        expect(type).toBe(Presentaion);
+        const {type, props} = await DatalistContainer({id: 'site-name'});
+        expect(type).toBe(DatalistPresenter);
         expect(props.list).toEqual(dummyData);
     });
 });
