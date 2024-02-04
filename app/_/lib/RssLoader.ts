@@ -1,5 +1,9 @@
 import Parser from 'rss-parser';
-const parser = new Parser({ 'customFields': { item: ['dc:subject', 'category'] } });
+
+const parser = new Parser({ 
+    customFields: { item: ['dc:subject', 'category'] },
+    timeout: 5*1000,
+});
 
 type SiteType = {
     url: string;
@@ -55,12 +59,12 @@ export async function loadSiteFeed (configPath:string, isInstant:boolean):Promis
     const configs = await loadConfig(configPath);
     const sleeping = isSleeping(configs.sleeping);
     const sites:SiteType[] = [];
-    await Promise.allSettled(configs.feeds.map(async (site: SiteType) => {
+    await Promise.allSettled(configs.feeds.filter((site: SiteType) => {
         if (sleeping) site.frequency = 0;
-        if (isSkip(site, isInstant) === false) {
-            site.feed = await loadFeed(site);
-            if (site.feed) sites.push(site);
-        }
+        return !isSkip(site, isInstant)
+    }).map(async (site: SiteType) => {
+        site.feed = await loadFeed(site);
+        if (site.feed) sites.push(site);
     }));
     return sites;
 }

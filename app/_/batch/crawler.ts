@@ -2,11 +2,10 @@
 import {upsert} from '../lib/MeiliSearch';
 import {loadSiteFeed} from '../lib/RssLoader';
 const args = process.argv.slice(2);
-const duration:number = (args[0])? 0 : 60;
-const isInstant = (duration === 0);
+const minutes:number = (args[0])? parseInt(args[0])??1 : 1; //引数で実行間隔（分）を指定
 const configPath = '../conf/rss.ts';
 
-const main = async () => {
+const main = async (isInstant:boolean) => {
     const sites = await loadSiteFeed(configPath, isInstant);
     sites.forEach(site => site.feed.items.forEach((item:any) => {
         try {
@@ -18,8 +17,12 @@ const main = async () => {
 }
 
 let timer = setInterval(() => {
-    main().catch(err => console.error('An error occurred:', err));
-    if (isInstant) {
-        clearInterval(timer);
-    }
-}, duration * 1000);
+    main((minutes === 0))
+    .catch(err => console.error('An error occurred:', err))
+    .finally(() => {
+        if(minutes === 0) {
+            clearInterval(timer);
+            process.exit(0);
+        }
+    });
+}, minutes * 60 * 1000);
