@@ -1,13 +1,19 @@
 
-import MeiliSearch from '@/_/lib/MeiliSearch';
+import {sites} from '@/_/lib/MeiliSearch';
 
-async function Datalist ({id}:{id:string}) {
-    const sites = await MeiliSearch.sites();
+//　テストに対応するため、Container/Presentational Components パターンにする
+
+export async function DatalistContainer ({id}:{id:string}) {
+    const list = await sites();
+    return <DatalistPresenter list={list} id={id} />;
+}
+
+export const DatalistPresenter = ({list, id}:{list:string[], id:string}) => {
     return (
         <datalist id={id}>
-            {sites.map((site:string, key:number) => (<option key={key} value={site}>{site}</option>))}
+            {list.map((i) => <option key={i} value={i}>{i}</option>)}
         </datalist>
     );
 }
 
-export default Datalist
+export default DatalistContainer
