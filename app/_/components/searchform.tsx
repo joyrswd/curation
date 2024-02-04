@@ -1,44 +1,52 @@
 "use client";
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
+import { type SearchKeys } from '@/_/lib/types';
 
-export default function Form() {
-    const router = useRouter();
-    const searchParams = useSearchParams();
-    const keywordValue = usePathname().split('/').slice(2).join('');
-    const dateValue = searchParams.get('date')??'';
-    const siteValue = searchParams.get('site')??'';
-    async function searchFeed(formData: FormData) {
-        const params: string[][] = [];
-        let keyword = '';
-        formData.forEach((value, key) => {
-            if (typeof value !== 'string') {
-                return;
-            } else if (value.length === 0) {
-                return;
-            } else if (key === 'keyword') {
-                keyword = value;
+export function parseQueryAndKeyword(formData: FormData): [Partial<SearchKeys>, string] {
+    const params: Partial<SearchKeys> = {};
+    let keyword: string = '';
+    formData.forEach((value, key) => {
+        if (typeof value === 'string' && value.length > 0) {
+            if (key === 'keyword') {
+                keyword = value;                
             } else {
-                params.push([key, value]);
+                params[key as keyof SearchKeys] = value;
             }
-        });
-        const query = new URLSearchParams(params).toString();
-        if (query.length + keyword.length === 0) {
-            router.push(`/`);
-        } else {
-            router.push(`/find/${keyword}?${query}`);
         }
+    });
+    return [params, keyword];
+}
+
+export function FormContainer() {
+    const router = useRouter();
+    async function searchFeed(formData: FormData) {
+        const [search, keyword] = parseQueryAndKeyword(formData);
+        const query = new URLSearchParams(search).toString();
+        let path = (keyword.length > 0) ? '/find/' + keyword : '/';
+        if(query.length > 0) path += '?' + query;
+        router.push(`${path}`);
     }
 
+    return <FormPresenter action={searchFeed} />
+}
+
+export function FormPresenter({ action }: { action: string | ((formData: FormData) => void) | undefined }) {
+    const searchParams = useSearchParams();
+    const dateValue = searchParams.get('date') ?? '';
+    const siteValue = searchParams.get('site') ?? '';
+    const keywordValue = usePathname().split('/').slice(2).join('');
     return (
-        <form action={searchFeed} className="md:max-w-prose">
+        <form action={action} className="md:max-w-prose">
             <p>
-                <input name="keyword" defaultValue={decodeURIComponent(keywordValue)} type="text" placeholder="キーワード" className="border border-gray-300 bg-white h-7 px-5 pr-16 rounded-lg text-sm focus:outline-none"/>
+                <input name="keyword" data-testid="keyword" defaultValue={decodeURIComponent(keywordValue)} type="text" placeholder="キーワード" className="border border-gray-300 bg-white h-7 px-5 pr-16 rounded-lg text-sm focus:outline-none" />
             </p>
             <p>
-                <input type="date" defaultValue={dateValue} name="date" className='border border-gray-300 bg-white h-7 rounded-lg text-sm focus:outline-none' />
-                <input type="text" defaultValue={siteValue} list="site-name" placeholder="掲載元" name='site' className='border border-gray-300 bg-white h-7 rounded-lg text-sm focus:outline-none' />
+                <input type="date" data-testid="date" defaultValue={dateValue} name="date" className='border border-gray-300 bg-white h-7 rounded-lg text-sm focus:outline-none' />
+                <input type="text" data-testid="site" defaultValue={siteValue} list="site-name" placeholder="掲載元" name='site' className='border border-gray-300 bg-white h-7 rounded-lg text-sm focus:outline-none' />
             </p>
             <p><button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold text-xs p-2 rounded whitespace-nowrap">検索</button></p>
         </form>
     )
 }
+
+export default FormContainer;
