@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import MeiliSearch from '@/_/lib/MeiliSearch';
+import {find} from '@/_/lib/MeiliSearch';
 
 export async function POST(req: Request, res: Response) {
     // JSONのリクエストを取得
     const params = await req.json();
     // MeiliSearch.findにリクエストを渡す
-    const data = await MeiliSearch.find(params);
+    const data = await find(params);
     //NULLの場合はエラーを返す
     if (data === null) {
         return new NextResponse('Not Found', { status: 404 });
