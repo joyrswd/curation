@@ -32,18 +32,15 @@ export function isSkip (site: SiteType, isInstant?: boolean):boolean {
 }
 
 export async function loadFeed (site: SiteType):Promise<any> {
-    let feed: any;
     try {
-        feed = await parser.parseURL(site.url);
+        const feed = await parser.parseURL(site.url);
+        if (!feed.items) {
+            throw new Error(`Feed items are missing`);
+        }
+        return feed;
     } catch (error) {
-        console.error(`Failed to parse URL ${site.url}: ${error}`);
-        return;
+        throw new Error(`Failed to load ${site.url}: ${error}`);
     }
-    if (!feed.items) {
-        console.error(`Feed items are missing ${site.url}`);
-        return;
-    }
-    return feed;
 }
 
 export async function loadConfig(configPath:string):Promise<any> {
@@ -55,16 +52,17 @@ export async function loadConfig(configPath:string):Promise<any> {
     }
 }
 
-export async function loadSiteFeed (configPath:string, isInstant:boolean):Promise<SiteType[]> {
+export async function loadSiteFeed (configPath:string, isInstant:boolean, callback:Function) {
     const configs = await loadConfig(configPath);
     const sleeping = isSleeping(configs.sleeping);
-    const sites:SiteType[] = [];
     await Promise.allSettled(configs.feeds.filter((site: SiteType) => {
         if (sleeping) site.frequency = 0;
         return !isSkip(site, isInstant)
     }).map(async (site: SiteType) => {
-        site.feed = await loadFeed(site);
-        if (site.feed) sites.push(site);
+        await loadFeed(site).then(async (feed) => {
+            if (feed) {
+                await Promise.allSettled( feed.items.map( (item:any) => callback(item, feed.title, feed.link)));
+            }
+        }).catch(err => console.error('An error occurred:', err));
     }));
-    return sites;
 }
