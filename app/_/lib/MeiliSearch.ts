@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv';
 import * as crypto from 'crypto';
 import { MeiliSearch } from 'meilisearch';
 import sanitizeHtml from 'sanitize-html';
-import { type Document, type Pagination } from './types';
+import { type Document, type Pagination, type SearchKeys } from './types';
 dotenv.config();
 
 const host = process.env.MEILI_HTTP_ADDR;
@@ -11,7 +11,7 @@ const indexName = process.env.CURATION_INDEX_NAME;
 if (!host || !apiKey || !indexName) {
   throw new Error('Environment variables are required');
 }
-const filterables = { 'site': 'site', 'date': 'timestamp', 'category': 'category' };
+const filterables: SearchKeys = { site: 'site', date: 'timestamp', category: 'category' };
 const pageLimit = 24;
 const client = new MeiliSearch({ host, apiKey });
 const index = client.index(indexName);

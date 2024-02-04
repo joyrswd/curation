@@ -8,8 +8,8 @@ const pushMock = jest.fn();
 let pathName = '';
 let searchQuery = '';
 jest.mock("next/navigation", () => ({
-    useRouter() { return { push: pushMock } },
-    usePathname(){ return pathName},
+    useRouter: () => ({ push: pushMock }) ,
+    usePathname : () => pathName,
     useSearchParams: () => new URLSearchParams(searchQuery)
 }));
 

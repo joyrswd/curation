@@ -19,3 +19,9 @@ export type Document = {
     home: string;
     timestamp: number;
 };
+
+export type SearchKeys = {
+    site: string;
+    date: string;
+    category: string;
+};
