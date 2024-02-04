@@ -2,8 +2,7 @@ import "@testing-library/jest-dom";
 import { render, screen } from '@testing-library/react';
 import { describe } from 'node:test';
 import {EntryContainer, EntryPresenter} from '@/_/components/entry';
-import {type Document} from '@/_/lib/MeiliSearch';
-import { experimental_useEffectEvent } from "react";
+import {type Document} from '@/_/lib/types';
 
 const dummyData = {
     id: 'testdata',

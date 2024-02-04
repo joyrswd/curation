@@ -1,6 +1,7 @@
 import React from 'react';
 import Image from 'next/image'
-import {get, type Document} from '@/_/lib/MeiliSearch';
+import {get} from '@/_/lib/MeiliSearch';
+import {type Document} from '@/_/lib/types';
 
 export const EntryContainer = async ({ id }: { id: string }) => {
     const record = await get(id);
