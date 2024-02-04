@@ -2,6 +2,7 @@ import * as dotenv from 'dotenv';
 import * as crypto from 'crypto';
 import { MeiliSearch } from 'meilisearch';
 import sanitizeHtml from 'sanitize-html';
+import { type Document, type Pagination } from './types';
 dotenv.config();
 
 const host = process.env.MEILI_HTTP_ADDR;
@@ -25,28 +26,6 @@ export type StatsType = {
 
 export type Feed = {
   [key: string]: any;
-};
-
-export type Pagination = {
-  result: boolean;
-  ids: string[];
-  current: number;
-  previous: number;
-  next: number;
-  last: number;
-};
-
-export type Document = {
-  id: string;
-  title: string;
-  link: string;
-  date: string;
-  intro: string;
-  image: string;
-  category: string;
-  site: string;
-  home: string;
-  timestamp: number;
 };
 
 export const parseIntro = (content: string): string => {
