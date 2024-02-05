@@ -2,11 +2,12 @@ import Entry from '@/_/components/entry';
 import Pagination from '@/_/components/pagination';
 import { Suspense } from 'react';
 import {type Pagination as PaginationType} from '@/_/lib/types';
+import {AppConf} from '@/_/conf/app';
 
 const getData = async (params?: string[], search?: Object): Promise<PaginationType|null> => {
   const data:any = search?? {};
   data.keyword = params;
-  let res = await fetch(process.env.CURATION_APP_HOST + '/api', {
+  let res = await fetch(AppConf.appHost + '/api', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
