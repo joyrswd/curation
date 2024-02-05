@@ -1,13 +1,12 @@
-import * as dotenv from 'dotenv';
 import * as crypto from 'crypto';
 import { MeiliSearch } from 'meilisearch';
 import sanitizeHtml from 'sanitize-html';
 import { type Document, type Pagination, type SearchKeys } from './types';
-dotenv.config();
+import AppConf from '../conf/app';
 
-const host = process.env.MEILI_HTTP_ADDR;
-const apiKey = process.env.MEILI_MASTER_KEY;
-const indexName = process.env.CURATION_INDEX_NAME;
+const host = AppConf.db.host;
+const apiKey = AppConf.db.key;
+const indexName = AppConf.db.index;
 if (!host || !apiKey || !indexName) {
   throw new Error('Environment variables are required');
 }
