@@ -30,14 +30,14 @@ export const EntryPresenter = ({ record }: { record: Document }) => {
                 </div>
                 <div className="self-end w-full flex md:items-end text-xs mt-1">
                     <div className='w-12 mr-3 text-center'>
-                        <a href={'/find?date=' + date} data-testid="date" className='flex md:flex-col'>
+                        <a href={'/?date=' + date} data-testid="date" className='flex md:flex-col'>
                             <span className="text-gray-500 md:pb-2 md:mb-2 md:border-b-2 border-gray-400/50" data-testid="month">{month}</span>
                             <span className="font-medium title-font ml-1 md:ml-0 md:text-gray-800 md:text-lg md:leading-none" data-testid="day">{day}</span>
                         </a>
                     </div>
                     <div className="w-full text-end">
-                        {record.category && <p className='mr-2 md:mr-0 float-left md:float-none'><a href={'/find?category=' + record.category} data-testid="category">{record.category}</a></p>}
-                        <p className='text-ellipsis overflow-hidden text-nowrap'><a className="title-font md:font-medium text-gray-500" href={'/find?site=' + record.site} data-testid="site">{record.site}</a></p>
+                        {record.category && <p className='mr-2 md:mr-0 float-left md:float-none'><a href={'/?category=' + record.category} data-testid="category">{record.category}</a></p>}
+                        <p className='text-ellipsis overflow-hidden text-nowrap'><a className="title-font md:font-medium text-gray-500" href={'/?site=' + record.site} data-testid="site">{record.site}</a></p>
                     </div>
                 </div>
             </div>
