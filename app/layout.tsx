@@ -6,11 +6,13 @@ import SearchForm from '@/_/components/searchform'
 import Datalist from '@/_/components/datalist'
 import { Suspense } from 'react'
 import { GoogleTagManager } from '@next/third-parties/google'
+import {AppConf} from '@/_/conf/app';
 
 // either Static metadata
 export const metadata: Metadata = {
-  title: process.env.CURATION_APP_NAME,
-  description: process.env.CURATION_APP_ABOUT,
+  title: AppConf.appName,
+  description: AppConf.meta.description,
+  keywords: AppConf.meta.keywords,
 }
 
 export default function RootLayout({
@@ -31,7 +33,7 @@ export default function RootLayout({
             <div>
               <div id="logo">
                 <Link href="/">
-                  {process.env.CURATION_APP_NAME}
+                  {AppConf.appName}
                 </Link>
               </div>
               <div>
@@ -47,7 +49,7 @@ export default function RootLayout({
           </footer>
         </div>
       </body>
-      {process.env.CURATION_APP_GTM_ID && (<GoogleTagManager gtmId={process.env.CURATION_APP_GTM_ID} />)}
+      {AppConf.gtmId && (<GoogleTagManager gtmId={AppConf.gtmId} />)}
     </html>
   )
 }
