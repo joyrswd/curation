@@ -1,8 +1,9 @@
 import Parser from 'rss-parser';
+import {log} from './LogWriter';
 
 const parser = new Parser({ 
     customFields: { item: ['dc:subject', 'category'] },
-    timeout: 5*1000,
+    timeout: 10*1000,
 });
 
 type SiteType = {
@@ -38,8 +39,8 @@ export async function loadFeed (site: SiteType):Promise<any> {
             throw new Error(`Feed items are missing`);
         }
         return feed;
-    } catch (error) {
-        throw new Error(`Failed to load ${site.url}: ${error}`);
+    } catch (error: any) {
+        throw new Error(`${error.message}`);
     }
 }
 
@@ -59,10 +60,12 @@ export async function loadSiteFeed (configPath:string, isInstant:boolean, callba
         if (sleeping) site.frequency = 0;
         return !isSkip(site, isInstant)
     }).map(async (site: SiteType) => {
+        log('rss', `[Start] ${site.url}`, 'd');
         await loadFeed(site).then(async (feed) => {
             if (feed) {
                 await Promise.allSettled( feed.items.map( (item:any) => callback(item, feed.title, feed.link)));
+                log('rss', `[Done] ${site.url} ${feed.items.length} items.`, 'd');
             }
-        }).catch(err => console.error('An error occurred:', err));
+        }).catch(err => log('rss', `[Error] ${site.url} : ${err.message}`, 'd'));
     }));
 }
