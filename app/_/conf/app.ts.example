@@ -11,6 +11,7 @@ export const AppConf = {
         key: 'YourMeiliMasterKey', // MeiliSearchのマスターキー
         index: 'feed', // MeiliSearchのインデックス名
     },
+    logDir: __dirname + '/../log', // ログファイルの保存先
 }
 
 export default AppConf;
