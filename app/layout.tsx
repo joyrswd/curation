@@ -13,22 +13,31 @@ export const metadata: Metadata = {
 }
 
 export default function Layout({
-  find,
+  main,
+  top,
+  baseline,
+  bottom,
 }: {
-  find: React.ReactNode
+  main: React.ReactNode
+  top: React.ReactNode
+  baseline: React.ReactNode
+  bottom: React.ReactNode
 }) {
   return (
     <html lang="ja">
       <body>
         <div id="wrapper" className="text-gray-600 body-font">
+          {top}
           <main className="container px-5 py-12 mx-auto">
             <div className="flex flex-wrap -mx-4 -my-8 justify-center">
-                {find}
+                {main}
             </div>
           </main>
+          {baseline}
           <footer>
             <Footer title={AppConf.appName} />
           </footer>
+          {bottom}
         </div>
       </body>
       {AppConf.gtmId && (<GoogleTagManager gtmId={AppConf.gtmId} />)}
