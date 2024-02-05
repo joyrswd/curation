@@ -87,12 +87,12 @@ describe('Pagination', () => {
     });
 
     it('検索フレーズを含んだページ番号変更', async () => {
-        pathName = '/find/searchKeyword';
+        pathName = '/searchKeyword';
         const { getByRole } = render(<Pagination pages={pages} />);
         const input = getByRole('spinbutton');
         fireEvent.change(input, { target: { value: 4 } });
         fireEvent.blur(input);
-        expect(pushMock).toHaveBeenCalledWith('/find/searchKeyword?page=4');
+        expect(pushMock).toHaveBeenCalledWith('/searchKeyword?page=4');
     });
 
     it('数字以外が入力された場合', async () => {

@@ -30,12 +30,12 @@ describe('Presentation', () => {
         expect(screen.getByRole('heading')).toHaveTextContent(dummyData.title);
         expect(screen.getByTestId('intro')).toHaveAttribute('href', dummyData.link);
         expect(screen.getByTestId('intro')).toHaveTextContent(dummyData.intro);
-        expect(screen.getByTestId('date')).toHaveAttribute('href', '/find?date=2021-02-01');
+        expect(screen.getByTestId('date')).toHaveAttribute('href', '/?date=2021-02-01');
         expect(screen.getByTestId('month')).toHaveTextContent('Feb');
         expect(screen.getByTestId('day')).toHaveTextContent('01');
-        expect(screen.getByTestId('category')).toHaveAttribute('href', '/find?category=' + dummyData.category);
+        expect(screen.getByTestId('category')).toHaveAttribute('href', '/?category=' + dummyData.category);
         expect(screen.getByTestId('category')).toHaveTextContent(dummyData.category);
-        expect(screen.getByTestId('site')).toHaveAttribute('href', '/find?site=' + dummyData.site);
+        expect(screen.getByTestId('site')).toHaveAttribute('href', '/?site=' + dummyData.site);
         expect(screen.getByTestId('site')).toHaveTextContent(dummyData.site);
     });
 
