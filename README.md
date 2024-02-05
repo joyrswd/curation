@@ -52,11 +52,11 @@ graph TB
     cd <MeiliSearchをインストールした場所> && ./meilisearch --master-key="任意の文字列（UTF8で16バイト以上）"
     ```
 3. 本リポジトリをクローンし、プロジェクトディレクトリに移動
-4. （.envファイルがない場合）.env.exampleをコピーして.envファイルを作成し、各種値を設定する
-5. 下記コマンドで各種Node.jsモジュールをインストールする  
+4. 下記コマンドで各種Node.jsモジュールをインストールする  
     ```bash
     npm install
     ```
+5. app/_/conf/app.ts.exampleをコピーしてapp.tsファイルを作成し、各種値を設定する
 6. app/_/conf/rss.ts.exampleをコピーしてrss.tsファイルを作成し、各種値を設定する
 7. 下記コマンドでRSS収集バッチと開発ウェブサーバーを起動させる
     ```bash

@@ -1,0 +1,17 @@
+export const AppConf = {
+    appHost: 'http://localhost:3000', // アプリのトップページのURL
+    appName: 'YourSiteName', // アプリの名前(タイトル)
+    meta: { // head内のmetaタグ
+        description:`このサイトの説明`,
+        keywords:`キーワード1, キーワード2`, 
+    },
+    gtmId: null, // Google Tag Manager ID
+    db: {
+        host: 'localhost:7700', // MeiliSearchのホスト名
+        key: 'YourMeiliMasterKey', // MeiliSearchのマスターキー
+        index: 'feed', // MeiliSearchのインデックス名
+    },
+    logDir: __dirname + '/../log', // ログファイルの保存先
+}
+
+export default AppConf;
