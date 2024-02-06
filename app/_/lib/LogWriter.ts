@@ -25,7 +25,7 @@ export const getLogPath = (filename:string, rotation:Rotation) => {
 
 export const formatMessage = (message:string) => {
     const date = new Date();
-    const timestamp = date.toISOString();
+    const timestamp = date.toLocaleString('ja-JP');
     return `${timestamp} ${message}\n`;
 }
 
