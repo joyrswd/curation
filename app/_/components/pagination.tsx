@@ -6,8 +6,8 @@ import { type Pagination as PaginationType } from '@/_/lib/types'
 function Pagination ({ pages }: { pages: PaginationType }) {
     const router = useRouter();
     const params = useSearchParams();
-    const keyword = usePathname().split('/').slice(2).join('');
-    const redirectTo = (keyword) ? `/find/${keyword}` : '/';
+    const keyword = usePathname().split('/').slice(1).join('');
+    const redirectTo = (keyword) ? `/${keyword}` : '/';
     const query: any = {};
     const currentPage = params.get('page') || pages.current;
     params.forEach((value, key) => {

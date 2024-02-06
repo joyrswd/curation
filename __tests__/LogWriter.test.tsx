@@ -47,7 +47,7 @@ describe('formatMessage', () => {
     it('メッセージフォーマット', () => {
         jest.setSystemTime(new Date('2022-01-01 02:00:00'));
         const message = Log.formatMessage('test message');
-        expect(message).toBe(`2021-12-31T17:00:00.000Z test message\n`);
+        expect(message).toBe(`2022/1/1 2:00:00 test message\n`);
     });
 });
 
@@ -73,7 +73,7 @@ describe('log', () => {
         jest.setSystemTime(new Date('2022-01-01 02:00:00'));
         Log.log('test', 'test message');
         const log = fs.readFileSync(testPath, 'utf-8');
-        expect(log).toBe(`2021-12-31T17:00:00.000Z test message\n`);
+        expect(log).toBe(`2022/1/1 2:00:00 test message\n`);
     });
 
     it('ファイル追記確認', () => {
@@ -81,6 +81,6 @@ describe('log', () => {
         Log.log('test', 'test message');
         Log.log('test', 'test message2');
         const log = fs.readFileSync(testPath, 'utf-8');
-        expect(log).toBe(`2021-12-31T17:00:00.000Z test message\n2021-12-31T17:00:00.000Z test message2\n`);
+        expect(log).toBe(`2022/1/1 2:00:00 test message\n2022/1/1 2:00:00 test message2\n`);
     });
 });

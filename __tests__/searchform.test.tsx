@@ -29,7 +29,7 @@ describe('FormPresenter', () => {
 
     it('検索フォーム入力済み表示の確認', async () => {
         searchQuery = 'date=2022-01-01&site=sitea';
-        pathName = '/find/searchKeyword';
+        pathName = '/searchKeyword';
         render(<FormPresenter action="" />);
         expect(screen.getByTestId('keyword')).toHaveValue('searchKeyword');
         expect(screen.getByTestId('date')).toHaveValue('2022-01-01');
@@ -78,7 +78,7 @@ describe('FormContainer', () => {
         formData.append('date', '2022-01-01');
         formData.append('site', 'sitea');
         searchForm.props.action(formData);
-        expect(pushMock).toHaveBeenCalledWith('/find/searchKeyword?date=2022-01-01&site=sitea');
+        expect(pushMock).toHaveBeenCalledWith('/searchKeyword?date=2022-01-01&site=sitea');
     });
 
     it('フォームリダイレクト確認（キーワードのみ）', async () => {
@@ -86,7 +86,7 @@ describe('FormContainer', () => {
         const formData = new FormData();
         formData.append('keyword', 'searchKeyword');
         searchForm.props.action(formData);
-        expect(pushMock).toHaveBeenCalledWith('/find/searchKeyword');
+        expect(pushMock).toHaveBeenCalledWith('/searchKeyword');
     });
 
     it('フォームリダイレクト確認（キーワードなし、日付・サイトあり）', async () => {
