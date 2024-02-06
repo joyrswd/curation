@@ -17,7 +17,7 @@ export function isSleeping(sleeping: number[]):boolean {
     const start = sleeping[0];
     const end = sleeping[1];
     const now = new Date();
-    const hour = now.getHours();
+    const hour = parseInt(now.toLocaleString('ja-JP', { hour: 'numeric', hour12: false, timeZone: 'Asia/Tokyo'}));
     return (start <= hour && hour < end);
 }
 

@@ -4,7 +4,7 @@ import { Suspense } from 'react';
 import { type Pagination as PaginationType } from '@/_/lib/types';
 import { AppConf } from '@/_/conf/app';
 
-export const find = async (params?: string[], search?: Object): Promise<PaginationType | null> => {
+export async function find (params?: string[], search?: Object): Promise<PaginationType | null> {
     const data: any = search ?? {};
     data.keyword = params;
     let res = await fetch(AppConf.appHost + '/api', {
