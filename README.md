@@ -66,6 +66,54 @@ graph TB
 
 以上
 
+## ディレクトリ構成(主要部分)
+```
+.
+├── __tests__               : テストスクリプトを格納するディレクトリ
+├── app
+│   ├── _
+│   │   ├── batch           : バッチスクリプトを格納するディレクトリ
+│   │   ├── components      : 再利用可能なUIコンポーネントを格納するディレクトリ
+│   │   ├── conf            : 設定ファイルを格納するディレクトリ
+│   │   ├── lib             : 汎用的なユーティリティ関数を格納するディレクトリ
+│   │   └── log             : ログファイルを格納するディレクトリ
+│   ├── @baseline           : （オプション）コンテンツの直下への表示用ディレクトリ
+│   ├── @bottom             : （オプション）ページ最下部への表示用ディレクトリ
+│   ├── @main/[[...slug]]
+│   │   └── page.tsx        : メインコンテンツを表示するためのReactコンポーネント
+│   ├── @top                : （オプション）コンテンツの直上への表示用ディレクトリ
+│   ├── api
+│   │   └── route.ts        : APIのルーティングを定義するファイル
+│   ├── global.css          : 全体に適用するスタイルシート
+│   └── layout.tsx          : 全体のレイアウトを定義するReactコンポーネント
+.
+.
+.
+```
+### Tips
+<details>
+<summary>_, @, [[..slug]]などの特殊記号について</summary>  
+
+- **_（アンダーバー）：プライベートフォルダ** -- 先頭に_を付けるととなり、配下のファイルはすべてルートの対象外となります。  
+https://nextjs.org/docs/app/building-your-application/routing/colocation#private-folders
+- **@ ：パラレルルート** -- 当該ディレクトリ名はURLパスの対象外となります。また直上のlayout.tsxからその配下のpage.tsxの内容を呼び出す事ができます。  
+https://nextjs.org/docs/app/building-your-application/routing/parallel-routes
+- **[[...slug]]：ダイナミックルート** -- []で囲むとURLパスの当該部分が変数のような扱いとなり、配下のpage.tsxでその値を受け取ることができます。  
+https://nextjs.org/docs/app/building-your-application/routing/dynamic-routes
+</details>
+
+<details>
+<summary>オプション（@baseline, @bottom, @top）</summary>  
+
+    オプションのディレクトリには空白を表示させるファイルが配置してあり、
+    そのファイル以外はgit管理外となるようにしています。  
+
+    本番環境など特定の環境で表示したいコンテンツ（広告など）がある場合、
+    page.tsxファイル(git管理外)を設置するとその環境で表示されるようになります。  
+
+    またpage.tsx内でimport "./xxx.css"のようにスタイルシートを呼ぶことで、
+    スタイルの上書きを行うことも可能です。
+</details>
 
 ## ライセンス
 
