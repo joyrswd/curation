@@ -120,6 +120,19 @@ export const upsert = async (item: Feed, siteTitle: string, siteUrl: string) => 
   }
 };
 
+export const isNew = async (item: Feed, siteTitle: string, siteUrl: string): Promise<boolean> => {
+  'use server'
+  try {
+    const document = convertToDocument(item, siteTitle, siteUrl);
+    const newest = document.timestamp;
+    const result = await index.search('', {limit: 1, filter: `site = "${siteTitle}" AND timestamp >= ${newest}` });
+    return (result.hits.length === 0);
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+};
+
 export const stats = async () => {
   'use server'
   try {

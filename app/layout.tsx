@@ -1,12 +1,9 @@
 import 'tailwindcss/tailwind.css'
 import './global.css'
-import Link from 'next/link'
 import { Metadata } from 'next'
-import SearchForm from '@/_/components/searchform'
-import Datalist from '@/_/components/datalist'
-import { Suspense } from 'react'
 import { GoogleTagManager } from '@next/third-parties/google'
 import {AppConf} from '@/_/conf/app';
+import Footer from '@/_/components/footer'
 
 // either Static metadata
 export const metadata: Metadata = {
@@ -16,37 +13,31 @@ export const metadata: Metadata = {
 }
 
 export default function RootLayout({
-  children,
+  main,
+  top,
+  baseline,
+  bottom,
 }: {
-  children: React.ReactNode
+  main: React.ReactNode
+  top: React.ReactNode
+  baseline: React.ReactNode
+  bottom: React.ReactNode
 }) {
   return (
     <html lang="ja">
       <body>
         <div id="wrapper" className="text-gray-600 body-font">
+          {top}
           <main className="container px-5 py-12 mx-auto">
             <div className="flex flex-wrap -mx-4 -my-8 justify-center">
-                {children}
+                {main}
             </div>
           </main>
+          {baseline}
           <footer>
-            <div>
-              <div id="logo">
-                <Link href="/">
-                  {AppConf.appName}
-                </Link>
-              </div>
-              <div>
-                <label><input type="checkbox" id="toggle" defaultChecked /></label>
-              </div>
-              <div>
-                <Suspense>
-                  <SearchForm />
-                  <Datalist id="site-name" />
-                </Suspense>
-              </div>
-            </div>
+            <Footer title={AppConf.appName} />
           </footer>
+          {bottom}
         </div>
       </body>
       {AppConf.gtmId && (<GoogleTagManager gtmId={AppConf.gtmId} />)}

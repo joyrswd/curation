@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import {find} from '@/_/lib/MeiliSearch';
 
-export async function POST(req: Request, res: Response) {
+export async function POST(req: Request) {
     // JSONのリクエストを取得
     const params = await req.json();
     // MeiliSearch.findにリクエストを渡す
