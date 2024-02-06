@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   keywords: AppConf.meta.keywords,
 }
 
-export default function Layout({
+export default function RootLayout({
   main,
   top,
   baseline,
