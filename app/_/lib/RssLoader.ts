@@ -46,28 +46,25 @@ export async function loadFeed (site: SiteType):Promise<any> {
 
 export async function loadConfig(configPath:string):Promise<any> {
     try{
-        const contents = await import(configPath);
+        delete require.cache[require.resolve(configPath)];
+        const contents = await require(configPath);
         return contents.default;
     }catch(err){
         throw new Error(`Failed to load config file ${configPath}: ${err}`);
     }
 }
 
-export async function loadSiteFeed (configPath:string, isInstant:boolean, isNew:Function, callback:Function) {
-    const configs = await loadConfig(configPath);
-    const sleeping = isSleeping(configs.sleeping);
-    await Promise.allSettled(configs.feeds.filter((site: SiteType) => {
-        if (sleeping) site.frequency = 0;
-        return !isSkip(site, isInstant)
-    }).map(async (site: SiteType) => {
-        log('rss', `[Start] ${site.url}`, 'd');
-        await loadFeed(site).then(async (feed) => {
-            if (feed && await isNew(feed.items[0], feed.title, feed.link)) {
-                await Promise.allSettled( feed.items.map( async(item:any) => await callback(item, feed.title, feed.link)));
-                log('rss', `[Update] ${site.url} ${feed.items.length} items.`, 'd');
-            } else {
-                log('rss', `[None] ${site.url} no updates.`, 'd');
-            }
-        }).catch(err => log('rss', `[Error] ${site.url} : ${err.message}`, 'd'));
-    }));
+export async function loadSiteFeed (configs:any, isInstant:boolean, isNew:Function, callback:Function) {
+    await Promise.allSettled(configs.feeds.filter((site: SiteType) => !isSkip(site, isInstant))
+        .map(async (site: SiteType) => {
+            log('rss', `[Start] ${site.url}`, 'd');
+            await loadFeed(site).then(async (feed) => {
+                if (feed && await isNew(feed.items[0], feed.title, feed.link)) {
+                    await Promise.allSettled( feed.items.map( async(item:any) => await callback(item, feed.title, feed.link)));
+                    log('rss', `[Update] ${site.url} ${feed.items.length} items.`, 'd');
+                } else {
+                    log('rss', `[None] ${site.url} no updates.`, 'd');
+                }
+            }).catch(err => log('rss', `[Error] ${site.url} : ${err.message}`, 'd'));
+        }));
 }
