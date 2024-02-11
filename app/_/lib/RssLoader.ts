@@ -84,13 +84,12 @@ export function getDuration(arg:any):number {
 }
 
 export function setNextTime(triggerTime:number, sleepings:number[], callback:Function) {
-    const nextTime = (isSleeping(sleepings)) ? wakeUp(sleepings) : triggerTime;
+    const nextTime = isSleeping(sleepings) ? wakeUp(sleepings) : triggerTime;
     setTimeout(callback, nextTime);
 }
 
-export async function startRssLoader(duration:any, configPath:string, isNew:Function, callback:Function) {
-    const isInstant = (duration === 0);
-    const triggerTime = getDuration(duration);
+export async function startRssLoader(triggerTime:number, configPath:string, isNew:Function, callback:Function) {
+    const isInstant = (triggerTime === 0);
     const config = await loadConfig(configPath);
     await loadSiteFeed(isInstant, config, isNew, callback)
         .catch(err => log('rss', `An error occurred: ${err}`))
