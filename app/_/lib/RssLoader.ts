@@ -1,5 +1,6 @@
 import Parser from 'rss-parser';
 import {log} from './LogWriter';
+import { run } from 'node:test';
 
 const parser = new Parser({ 
     customFields: { item: ['dc:subject', 'category'] },
@@ -21,6 +22,10 @@ export function isSleeping(sleeping: number[]):boolean {
     return (start <= hour && hour < end);
 }
 
+export function wakeUp(sleeping: number[]):number {
+    return (sleeping[1] - sleeping[0]) * 60 * 60 * 1000;
+}
+
 export function isSkip (site: SiteType, isInstant?: boolean):boolean {
     if ((site.skip ?? false) !== false) {
         return true;
@@ -28,8 +33,10 @@ export function isSkip (site: SiteType, isInstant?: boolean):boolean {
         return false;
     }
     const frequency = site.frequency;
-    const minutes = new Date().getMinutes() || 60;
-    return ((frequency == 0 && minutes != 60) || (frequency > 0 && minutes % frequency > 0));
+    const currentMin = new Date().getMinutes();
+    const currentHour = new Date().getHours();  
+    const minutes = (currentHour * 60 + currentMin) || 24 * 60;
+    return ((frequency == 0 && minutes != 24 * 60) || (frequency > 0 && minutes % frequency > 0));
 }
 
 export async function loadFeed (site: SiteType):Promise<any> {
@@ -54,17 +61,38 @@ export async function loadConfig(configPath:string):Promise<any> {
     }
 }
 
-export async function loadSiteFeed (configs:any, isInstant:boolean, isNew:Function, callback:Function) {
+export async function processFeed (site: SiteType, isNew:Function, callback:Function) {
+    log('rss', `[Start] ${site.url}`, 'd');
+    await loadFeed(site).then(async (feed) => {
+        if (feed && await isNew(feed.items[0], feed.title, feed.link)) {
+            await Promise.allSettled( feed.items.map( async(item:any) => await callback(item, feed.title, feed.link)));
+            log('rss', `[Update] ${site.url} ${feed.items.length} items.`, 'd');
+        } else {
+            log('rss', `[None] ${site.url} no updates.`, 'd');
+        }
+    }).catch(err => log('rss', `[Error] ${site.url} : ${err.message}`, 'd'));
+}
+
+export async function loadSiteFeed (isInstant:boolean, configs:any, isNew:Function, callback:Function) {
     await Promise.allSettled(configs.feeds.filter((site: SiteType) => !isSkip(site, isInstant))
-        .map(async (site: SiteType) => {
-            log('rss', `[Start] ${site.url}`, 'd');
-            await loadFeed(site).then(async (feed) => {
-                if (feed && await isNew(feed.items[0], feed.title, feed.link)) {
-                    await Promise.allSettled( feed.items.map( async(item:any) => await callback(item, feed.title, feed.link)));
-                    log('rss', `[Update] ${site.url} ${feed.items.length} items.`, 'd');
-                } else {
-                    log('rss', `[None] ${site.url} no updates.`, 'd');
-                }
-            }).catch(err => log('rss', `[Error] ${site.url} : ${err.message}`, 'd'));
-        }));
+        .map((site: SiteType) => processFeed(site, isNew, callback)));
+}
+
+export function getDuration(arg:any):number {
+    const duration:number = isNaN(arg)? 1 : parseInt(arg)??1; //引数で実行間隔（分）を指定
+    return duration * 60 * 1000;
+}
+
+export function setNextTime(triggerTime:number, sleepings:number[], callback:Function) {
+    const nextTime = (isSleeping(sleepings)) ? wakeUp(sleepings) : triggerTime;
+    setTimeout(callback, nextTime);
+}
+
+export async function startRssLoader(duration:any, configPath:string, isNew:Function, callback:Function) {
+    const isInstant = (duration === 0);
+    const triggerTime = getDuration(duration);
+    const config = await loadConfig(configPath);
+    await loadSiteFeed(isInstant, config, isNew, callback)
+        .catch(err => log('rss', `An error occurred: ${err}`))
+        .finally(() => (isInstant) ? process.exit(0) : setNextTime(triggerTime, config.sleeping, () => startRssLoader(triggerTime, configPath, isNew, callback)));
 }
