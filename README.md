@@ -115,6 +115,13 @@ https://nextjs.org/docs/app/building-your-application/routing/dynamic-routes
     スタイルの上書きを行うことも可能です。
 </details>
 
+## 開発予定
+- ~~RSS2.0対応~~
+- ~~クローラー時間間隔調整~~
+- kuromoji導入
+- デイリーページ作成
+- SQlite導入
+
 ## ライセンス
 
 このプロジェクトは[MITライセンス](LICENSE)の下でライセンスされています。
