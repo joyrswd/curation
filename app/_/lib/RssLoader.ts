@@ -1,6 +1,5 @@
 import Parser from 'rss-parser';
 import {log} from './LogWriter';
-import { run } from 'node:test';
 
 const parser = new Parser({ 
     customFields: { item: ['dc:subject', 'category'] },

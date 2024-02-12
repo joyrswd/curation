@@ -2,13 +2,15 @@ import { NextResponse } from "next/server";
 import {findDaily} from '@/_/lib/MeiliSearch';
 import {tokenize} from "kuromojin";
 import crypto from "crypto";
+import nodeCache from "node-cache";
 
-const cache = new Map();
+const cache = new nodeCache();
 
-export async function getKeywords (text:string): Promise<string[]> {
+export async function getKeywords (text:string): Promise<any> {
     const hash = crypto.createHash('md5').update(text).digest('hex');
-    if (cache.has(hash)) {
-        return cache.get(hash);
+    const cachedHighlights = cache.get(hash);
+    if (cachedHighlights) {
+        return cachedHighlights;
     }
     const words: any = {};
     const tokens = await tokenize(text, {dicPath:'node_modules/kuromoji/dict/'});
@@ -30,6 +32,11 @@ export async function getKeywords (text:string): Promise<string[]> {
 export async function POST(req: Request) {
     // JSONのリクエストを取得
     const params = await req.json();
+    // 今日以降の日付は対象外とする。
+    const today = new Date().toLocaleDateString('ja-JP', {year:'numeric', month: '2-digit', day: '2-digit'}).replaceAll('/', '-');
+    if (new Date(today) <= new Date(params['date'])) {
+      return new NextResponse('Not Found', { status: 404 });
+    }
     // MeiliSearch.findにリクエストを渡す
     const data = await findDaily(params['date']);
     //NULLの場合はエラーを返す

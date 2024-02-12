@@ -18,6 +18,7 @@
     "kuromojin": "^3.0.0",
     "meilisearch": "^0.37.0",
     "next": "^14.1.0",
+    "node-cache": "^5.1.2",
     "react": "^18",
     "react-dom": "^18",
     "rss-parser": "^3.13.0",
