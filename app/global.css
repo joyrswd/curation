@@ -141,3 +141,50 @@ footer label:has(#toggle)::before {
 footer label:has(#toggle:checked)::before {
     top: calc(100% - 1em + 0.05em);
 }
+
+dl#keywords {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    width: 100%;
+    text-align: center;
+}
+
+dl#keywords dt {
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+dl#keywords dd {
+    margin: 0;
+}
+
+dl#keywords dd ul{
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    justify-content: center;
+}
+
+dl#keywords dd ul li{
+    margin: 0.5rem;
+}
+
+dl#keywords dd ul li a{
+    text-decoration: none;
+    color: #fff;
+    background-color: #999;
+    padding: 0.2rem 0.5rem;
+    border-radius: 1rem;
+    text-align: center;
+    font-size: smaller;
+    transition: 0.5s;
+}
+p#total {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    width: 100%;
+}
