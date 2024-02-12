@@ -164,6 +164,20 @@ export const find = async (params?: any): Promise<Pagination | null> => {
   }
 };
 
+export const findDaily = async (targetDate: string): Promise<any | null> => {
+  'use server'
+  try {
+    const filterString = parseFilter({date: targetDate});
+    const options: any = { filter:filterString, limit: 1000, sort: ['timestamp:desc'], attributesToSearchOn: ['title', 'intro', 'category'] };
+    const results = await index.search(null, options);
+    return results;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+
 export const get = async (id: string): Promise<Document | null> => {
   'use server'
   try {
