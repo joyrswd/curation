@@ -204,3 +204,19 @@ export const sites = async (): Promise<string[]> => {
     return [];
   }
 };
+
+export const lastPubDate = async (): Promise<string> => {
+  'use server'
+  //最新のdateを取得
+  const results = await index.search('', {limit:1, sort: ['timestamp:desc']});
+  const item = results.hits[0];
+  return item.date;
+}
+
+export const firstPubDate =  async (): Promise<string> => {
+  'use server'
+  //最新のdateを取得
+  const results = await index.search('', {limit:1, sort: ['timestamp:asc']});
+  const item = results.hits[0];
+  return item.date;
+}
