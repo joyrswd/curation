@@ -55,7 +55,7 @@ const genereateUrls = async (from: string, to: string) => {
             xml.push(makeElement(thisDate));
         }
         console.log(thisDate);
-    } while (++count < 10 && dater > last)
+    } while (++count < 20 && dater > last)
     return xml;
 }
 
@@ -67,10 +67,8 @@ const create = async () => {
     const sitemap = generateSitemap(urls);
     fs.writeFile(sitmapPath, sitemap, (err) => {
         if (err) console.error(err);
+        setTimeout(create, 1000*60*60*24);
     });
 }
 
-//create();
-
-const d = new Date().toLocaleDateString('ja-JP', {year:'numeric', month: '2-digit', day: '2-digit'}).replaceAll('/', '-');
-console.log(new Date(d));
+create();

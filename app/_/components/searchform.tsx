@@ -31,10 +31,11 @@ export function FormContainer() {
 }
 
 export function FormPresenter({ action }: { action: string | ((formData: FormData) => void) | undefined }) {
+    const isDaily = usePathname().search('/daily/') === 0;
     const searchParams = useSearchParams();
-    const dateValue = searchParams.get('date') ?? '';
+    const dateValue = (isDaily) ? usePathname().split('/').slice(2).join('') : searchParams.get('date') ?? '';
     const siteValue = searchParams.get('site') ?? '';
-    const keywordValue = usePathname().split('/').slice(1).join('');
+    const keywordValue = (isDaily) ? '' : usePathname().split('/').slice(1).join('');
     const today = new Date().toISOString().split('T')[0];
     return (
         <form action={action} className="md:max-w-prose">

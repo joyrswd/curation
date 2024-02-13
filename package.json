@@ -10,7 +10,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "batch:stats": "ts-node ./app/_/batch/stats.ts",
-    "batch:crawl": "ts-node ./app/_/batch/crawler.ts"
+    "batch:crawl": "ts-node ./app/_/batch/crawler.ts",
+    "batch:sitemap": "ts-node ./app/_/batch/sitemap.ts"
   },
   "dependencies": {
     "@next/third-parties": "^14.1.0",
