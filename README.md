@@ -40,8 +40,11 @@ graph TB
     B(Node.js batch)
     C[(MeiliSearch)]
     D(Node.js web)
+    E(SQLite)
     B --> RSS
     D --> C
+    B --> E
+    D --> E
     B --> C
 ```
 ## インストール

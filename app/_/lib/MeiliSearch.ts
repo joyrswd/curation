@@ -143,6 +143,22 @@ export const stats = async () => {
   }
 };
 
+export const getAll = async (params: any, keywordString?:string): Promise<any> => {
+  'use server'
+  try {
+    const options: any = { sort: ['timestamp:desc'], attributesToSearchOn: ['title', 'intro', 'category'] };
+    Object.keys(params).forEach((key:string) => {
+      options[key] = params[key];
+    });
+    const results = await index.search(keywordString, options);
+    return results;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+
 export const find = async (params?: any): Promise<Pagination | null> => {
   'use server'
   try {
@@ -152,11 +168,11 @@ export const find = async (params?: any): Promise<Pagination | null> => {
     if (isNaN(current)) {
       throw new Error('Invalid page number');
     }
-    const options: any = { page: current, hitsPerPage: pageLimit, sort: ['timestamp:desc'], attributesToSearchOn: ['title', 'intro', 'category'] };
+    const options: any = { page: current, hitsPerPage: pageLimit};
     if (filterString) {
       options.filter = [filterString];
     }
-    const results = await index.search(keywordString, options);
+    const results = await getAll(options, keywordString);
     return convertToPagination(results);
   } catch (error) {
     console.error(error);
