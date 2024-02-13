@@ -6,7 +6,7 @@ import nodeCache from "node-cache";
 
 const cache = new nodeCache();
 
-export async function getKeywords (text:string): Promise<any> {
+async function getKeywords (text:string): Promise<any> {
     const hash = crypto.createHash('md5').update(text).digest('hex');
     const cachedHighlights = cache.get(hash);
     if (cachedHighlights) {
