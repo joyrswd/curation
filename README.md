@@ -79,11 +79,15 @@ graph TB
 │   │   └── log             : ログファイルを格納するディレクトリ
 │   ├── @baseline           : （オプション）コンテンツの直下への表示用ディレクトリ
 │   ├── @bottom             : （オプション）ページ最下部への表示用ディレクトリ
-│   ├── @main/[[...slug]]
+│   ├── @children/[[...slug]]
 │   │   └── page.tsx        : メインコンテンツを表示するためのReactコンポーネント
 │   ├── @top                : （オプション）コンテンツの直上への表示用ディレクトリ
 │   ├── api
+│   │   ├── daily
+│   │   │   └── route.ts    : 日別一覧のルーティングを定義するファイル
 │   │   └── route.ts        : APIのルーティングを定義するファイル
+│   ├── daily/[date]
+│   │   └── page.tsx        : 日別ページを表示するためのReactコンポーネント
 │   ├── global.css          : 全体に適用するスタイルシート
 │   └── layout.tsx          : 全体のレイアウトを定義するReactコンポーネント
 .
@@ -115,12 +119,6 @@ https://nextjs.org/docs/app/building-your-application/routing/dynamic-routes
     スタイルの上書きを行うことも可能です。
 </details>
 
-## 開発予定
-- ~~RSS2.0対応~~
-- ~~クローラー時間間隔調整~~
-- kuromoji導入
-- デイリーページ作成
-- SQlite導入
 
 ## ライセンス
 
