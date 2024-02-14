@@ -60,7 +60,7 @@ describe('Presentation', () => {
 
 describe('Container', () => {
     it('entry取得の確認', async () => {
-        const {type, props} = await EntryContainer({id: 'testdata'});
+        const {type, props} = await EntryContainer({id: 0});
         expect(type).toBe(EntryPresenter);
         expect(props.record).toEqual(dummyData);
     });

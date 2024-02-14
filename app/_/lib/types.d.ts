@@ -1,6 +1,6 @@
 export type Pagination = {
     result: boolean;
-    ids: string[];
+    ids: number[];
     current: number;
     previous: number;
     next: number;
@@ -8,7 +8,7 @@ export type Pagination = {
 };
 
 export type Document = {
-    id: string;
+    id: number;
     title: string;
     link: string;
     date: string;
@@ -16,7 +16,6 @@ export type Document = {
     image: string;
     category: string;
     site: string;
-    home: string;
     timestamp: number;
 };
 

@@ -1,33 +1,34 @@
 import { NextResponse } from "next/server";
 import {findDaily} from '@/_/lib/MeiliSearch';
-import {tokenize} from "kuromojin";
-import crypto from "crypto";
-import nodeCache from "node-cache";
+import sqlite3 from 'sqlite3';
+import { AppConf } from '@/_/conf/app';
 
-const cache = new nodeCache();
 
-async function getKeywords (text:string): Promise<any> {
-    const hash = crypto.createHash('md5').update(text).digest('hex');
-    const cachedHighlights = cache.get(hash);
-    if (cachedHighlights) {
-        return cachedHighlights;
-    }
-    const words: any = {};
-    const tokens = await tokenize(text, {dicPath:'node_modules/kuromoji/dict/'});
-    tokens.forEach((result: any) => {
-        if (result.pos_detail_1 === '固有名詞') {
-            const word = result.surface_form;
-            if(word.length > 1 && !word.match(/^[0-9a-zA-Z]+$/)){
-                words[word] = (words[word] || 0) + 1;
-            }
-        }
+async function getKeywords (ids:number[]): Promise<any> {    
+    const words:string[] = [];
+    const placeholder = ids.map(() => '?').join(',');
+    const db = new sqlite3.Database(AppConf.sqlite);
+    const tokens:any = await new Promise(resolve => db.all(`
+                    SELECT word, sum(feed_token.count) as total FROM tokens 
+                    JOIN feed_token ON tokens.id = feed_token.token_id 
+                    WHERE feed_token.feed_id in (${placeholder})
+                    GROUP BY word
+                    ORDER BY total DESC
+                    LIMIT 10`
+                , ids, (err, rows) => resolve(rows)));
+    db.close();
+    tokens.forEach((token: any) => {
+        words.push(token.word);
     });
-    const sorted = Object.keys(words).sort((a, b) => words[b] - words[a]);
-    const highlights = sorted.slice(0, 10).map((word) => `${word}`);
-    cache.set(hash, highlights);
-    return highlights;
+    return words;
 };
 
+async function getNext() {
+    const db = new sqlite3.Database(AppConf.sqlite);
+    const result = await new Promise(resolve => db.get('SELECT date FROM feeds ORDER BY timestamp DESC LIMIT 1', (err, row) => resolve(row)));
+    db.close();
+    return result.date;
+}
 
 export async function POST(req: Request) {
     // JSONのリクエストを取得
@@ -43,14 +44,9 @@ export async function POST(req: Request) {
     if (data === null) {
         return new NextResponse('Not Found', { status: 404 });
     } else {
-        const texts:string[] = [];
-        const ids = data.hits.map((record: any) => {
-            texts.push(record.title + " " + record.intro);
-            return record.id;
-        });
-        const keywords = await getKeywords(texts.join("\n"));
+        const keywords = await getKeywords(data.ids);
         // resultをJSONに変換
-        const json = JSON.stringify([ids, keywords]);
+        const json = JSON.stringify([data, keywords]);
         return new NextResponse(json, {
             headers: {
                 "Content-Type": "application/json",
