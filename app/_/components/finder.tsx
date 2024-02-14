@@ -28,7 +28,7 @@ export function List({ pagination }: { pagination: PaginationType | null }) {
         <div className="text-center">No results found.</div>
     ) : (
         <>
-            {pagination.ids.map((i: string) => <Entry id={i} key={i} />)}
+            {pagination.ids.map((i: number) => <Entry id={i} key={i} />)}
             <Suspense>
                 <Pagination pages={pagination} />
             </Suspense>

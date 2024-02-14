@@ -3,7 +3,7 @@ import Image from 'next/image'
 import {get} from '@/_/lib/MeiliSearch';
 import {type Document} from '@/_/lib/types';
 
-export const EntryContainer = async ({ id }: { id: string }) => {
+export const EntryContainer = async ({ id }: { id: number }) => {
     const record = await get(id);
     if (!record) return null;
     return <EntryPresenter record={record} />;
@@ -17,10 +17,9 @@ export const getLink = (date:string) :string => {
 
 export const EntryPresenter = ({ record }: { record: Document }) => {
     const month = new Date(record.date).toLocaleString('en-us', { month: 'short' });
-    const day = new Date(record.date).toLocaleString('en-us', { day: '2-digit' });
-    const time = new Date(record.date).toLocaleString('ja-JP', { hour: '2-digit', minute: '2-digit' });
-    const date = new Date(record.date).toLocaleString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '-');
-    const href = getLink(date);
+    const day = record.date.split('-')[2];
+    const time = new Date(record.timestamp).toLocaleString('ja-JP', { hour: '2-digit', minute: '2-digit' });
+    const href = getLink(record.date);
     return (
         <div className="w-full lg:max-w-sm mx-1 mb-2">
             <div className="h-full flex flex-col p-4 md:pb-9 bg-gradient-to-t from-white via-neutral-200/75 via-10% to-white to-50%">

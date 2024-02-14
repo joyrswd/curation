@@ -76,7 +76,7 @@ const question = (prompt: string) => {
                     db.run('BEGIN TRANSACTION');
                     const stmt = db.prepare('INSERT INTO feeds (site_id, title, link, date, intro, image, category, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
                     result.hits.forEach((feed: any) => {
-                        const date = new Date(feed.date).toISOString().split('T')[0];
+                        const date = new Date(feed.timestamp).toLocaleDateString('ja-JP', {year:'numeric', month: '2-digit', day: '2-digit'}).replaceAll('/', '-');
                         stmt.run(site.id, feed.title, feed.link, date, feed.intro, feed.image, feed.category, feed.timestamp);
                     });
                     total = result.totalHits;
