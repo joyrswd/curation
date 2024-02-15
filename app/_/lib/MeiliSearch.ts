@@ -192,10 +192,12 @@ export const findDaily = async (targetDate: string): Promise<any | null> => {
     const previousTimestamp = results.hits[results.hits.length - 1].timestamp;
     const previousoption = { filter:`timestamp < ${previousTimestamp}` , limit: 1, sort: ['timestamp:desc']};
     const previous = await getAll(previousoption);
-    
+
+    const latestDate = await lastPubDate();
+
     return {
       ids: results.hits.map((hit: any) => hit.id),
-      next: (next.hits.length > 0) ? next.hits[0].date : null,
+      next: (next.hits.length === 0 || latestDate === next.hits[0].date) ? null : next.hits[0].date,
       previous: (previous.hits.length > 0) ? previous.hits[0].date : null,
     };
   } catch (error) {

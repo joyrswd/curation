@@ -69,3 +69,18 @@ export async function token(text:string, feedId:number): Promise<boolean> {
     return true;
 }
 
+export async function siteByRss(rss:string): Promise<any> {
+    const site = await get('SELECT * FROM sites WHERE rss = ?', [rss]);
+    return site??null;
+}
+
+export async function addSite(rss:string, name:string, url:string) {
+    await run(`INSERT INTO sites (rss, name, url, frequency) VALUES(?,?,?,60)`, [rss, name, url]);
+    const site = await get(`SELECT * from sites WHERE rss = ?`, [rss]);
+    return site;
+}
+
+export async function updateSite(value:string|number, key:string, id:number):Promise<boolean>{
+    await run (`UPDATE sites SET ${key} = ? WHERE id = ?`, [value, id]);
+    return true;
+}

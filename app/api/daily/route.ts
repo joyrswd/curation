@@ -23,13 +23,6 @@ async function getKeywords (ids:number[]): Promise<any> {
     return words;
 };
 
-async function getNext() {
-    const db = new sqlite3.Database(AppConf.sqlite);
-    const result = await new Promise(resolve => db.get('SELECT date FROM feeds ORDER BY timestamp DESC LIMIT 1', (err, row) => resolve(row)));
-    db.close();
-    return result.date;
-}
-
 export async function POST(req: Request) {
     // JSONのリクエストを取得
     const params = await req.json();

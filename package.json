@@ -11,11 +11,14 @@
     "test:watch": "jest --watch",
     "batch:stats": "ts-node ./app/_/batch/stats.ts",
     "batch:crawl": "ts-node ./app/_/batch/crawler.ts",
-    "batch:sitemap": "ts-node ./app/_/batch/sitemap.ts"
+    "batch:sitemap": "ts-node ./app/_/batch/sitemap.ts",
+    "batch:init": "ts-node ./app/_/batch/initdb.ts",
+    "batch:manage": "ts-node ./app/_/batch/sitemanage.ts"
   },
   "dependencies": {
     "@next/third-parties": "^14.1.0",
     "dotenv": "^16.4.1",
+    "enquirer": "^2.4.1",
     "kuromojin": "^3.0.0",
     "meilisearch": "^0.37.0",
     "next": "^14.1.0",

@@ -49,7 +49,7 @@ const question = (prompt: string) => {
         //sitesテーブルにデータを挿入
         const stmt = db.prepare('INSERT INTO sites (name, url, rss, frequency, skip, hidden, lastupdate) VALUES (?, ?, ?, ?, ?, ?, ?)');
         await Promise.allSettled(Rss.feeds.map(async (site: any) => {
-            await loadFeed(site).then((feed) => {
+            await loadFeed(site.url).then((feed) => {
                 const lastupdate = new Date(feed.items[0].pubDate??feed.items[0].date).toISOString();
                 stmt.run(feed.title, feed.link, site.url, site.frequency, (site.skip ? 1 : 0), 0, lastupdate);
                 console.log(`Loaded feed ${site.url}`);

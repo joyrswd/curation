@@ -1,18 +1,12 @@
 import Parser from 'rss-parser';
 import { log } from './LogWriter';
 import sanitizeHtml from 'sanitize-html';
+import {type SiteType} from './types';
 
 const parser = new Parser({
     customFields: { item: ['dc:subject', 'category'] },
     timeout: 10 * 1000,
 });
-
-type SiteType = {
-    id: number;
-    url: string;
-    frequency: number;
-    lastupdate: number;
-}
 
 export function isSleeping(sleeping: number[]): boolean {
     const start = sleeping[0];
@@ -70,9 +64,9 @@ export function convert(item: any): any {
     };
 }
 
-export async function loadFeed(site: SiteType): Promise<any> {
+export async function loadFeed(url: string): Promise<any> {
     try {
-        const feed = await parser.parseURL(site.url);
+        const feed = await parser.parseURL(url);
         if (!feed.items) {
             throw new Error(`Feed items are missing`);
         }
@@ -84,7 +78,7 @@ export async function loadFeed(site: SiteType): Promise<any> {
 
 export async function loadFeedItems(site: SiteType): Promise<any> {
     try {
-        const feed = await loadFeed(site);
+        const feed = await loadFeed(site.url);
         return feed.items.map((item:any) => convert(item));
     } catch (error: any) {
         throw new Error(`${error.message}`);
@@ -101,16 +95,20 @@ export async function loadConfig(configPath: string): Promise<any> {
     }
 }
 
+export async function addItems(items:any, site:SiteType, callback: Function) {
+    const records = items.map((item:any) => convert(item));
+    if (records && site.lastupdate < records[0].timestamp) {
+        await Promise.allSettled(records.map(async (record: any) => await callback(record, site.id)));
+        log('rss', `[Update] ${site.url} ${records.length} items.`, 'd');
+    } else {
+        log('rss', `[None] ${site.url} no updates.`, 'd');
+    }
+}
+
 export async function processFeed(site: SiteType, callback: Function) {
     log('rss', `[Start] ${site.url}`, 'd');
-    await loadFeedItems(site).then(async (items) => {
-        if (items && site.lastupdate < items[0].timestamp) {
-            await Promise.allSettled(items.map(async (item: any) => await callback(item, site.id)));
-            log('rss', `[Update] ${site.url} ${items.length} items.`, 'd');
-        } else {
-            log('rss', `[None] ${site.url} no updates.`, 'd');
-        }
-    }).catch(err => log('rss', `[Error] ${site.url} : ${err.message}`, 'd'));
+    await loadFeed(site.url).then(async (feed) => addItems(feed.items, site, callback))
+            .catch(err => log('rss', `[Error] ${site.url} : ${err.message}`, 'd'));
 }
 
 export async function loadSiteFeed(isInstant: boolean, sites: any, callback: Function) {
