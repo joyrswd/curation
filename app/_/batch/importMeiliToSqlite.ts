@@ -50,8 +50,8 @@ const question = (prompt: string) => {
         const stmt = db.prepare('INSERT INTO sites (name, url, rss, frequency, skip, hidden, lastupdate) VALUES (?, ?, ?, ?, ?, ?, ?)');
         await Promise.allSettled(Rss.feeds.map(async (site: any) => {
             await loadFeed(site).then((feed) => {
-                const current = (new Date()).toISOString();
-                stmt.run(feed.title, feed.link, site.url, site.frequency, (site.skip ? 1 : 0), 0, current);
+                const lastupdate = new Date(feed.items[0].pubDate??feed.items[0].date).toISOString();
+                stmt.run(feed.title, feed.link, site.url, site.frequency, (site.skip ? 1 : 0), 0, lastupdate);
                 console.log(`Loaded feed ${site.url}`);
             }).catch((err) => {
                 console.log(`Failed to load feed ${site.url}: ${err}`);
