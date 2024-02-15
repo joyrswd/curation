@@ -72,7 +72,7 @@ export const convertToDocument = (item: Feed, siteTitle: string, siteUrl: string
   const pubDate = item.pubDate ?? item.date;
   return {
     // linkのURLをmd5でハッシュ化してidとする
-    id: crypto.createHash('md5').update(item.link).digest('hex'),
+    id: item.id,
     title: item.title,
     link: item.link,
     date: new Date(pubDate).toISOString(),
@@ -95,6 +95,11 @@ export const convertToPagination = (results: any): Pagination => {
     next: (current < last) ? current + 1 : 0,
     last: last,
   };
+}
+
+export const insert = async (item: any): Promise<boolean> => {
+  await index.addDocuments([item as Object]).catch((err) => console.log(err));
+  return true;
 }
 
 export const upsert = async (item: Feed, siteTitle: string, siteUrl: string) => {
@@ -241,4 +246,8 @@ export const firstPubDate =  async (): Promise<string> => {
   const results = await index.search('', {limit:1, sort: ['timestamp:asc']});
   const item = results.hits[0];
   return item.date;
+}
+
+export const deleteIndex = async (target:string) => {
+  client.deleteIndexIfExists(target);
 }
