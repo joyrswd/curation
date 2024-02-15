@@ -24,3 +24,10 @@ export type SearchKeys = {
     date: string;
     category: string;
 };
+
+export type SiteType = {
+    id: number;
+    url: string;
+    frequency: number;
+    lastupdate: number;
+}
