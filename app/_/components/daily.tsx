@@ -2,7 +2,12 @@ import Entry from '@/_/components/entry';
 import { AppConf } from '@/_/conf/app';
 import Link from 'next/link'
 
-export async function find(date: string): Promise<[string, string[], string[]] | null> {
+type DailyPagination = {
+    ids: number[], 
+    next: string | null, 
+    previous: string | null
+};
+export async function find(date: string): Promise<[string, DailyPagination, string[]] | null> {
     const response = await fetch(AppConf.appHost + '/api/daily', {
         method: 'POST',
         headers: {
@@ -20,7 +25,7 @@ export async function find(date: string): Promise<[string, string[], string[]] |
     return [date, data, keywords];
 };
 
-export function List({ date, data, keywords }: { date: string | null; data: { ids: number[], next: string | null, previous: string | null } | null; keywords: string[] | null }) {
+export function List({ date, data, keywords }: { date: string | null; data: DailyPagination | null; keywords: string[] | null }) {
     const thisdate = (date) ? new Date(date).toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
     return (!data) ? (
         <div className="text-center">No results found.</div>
