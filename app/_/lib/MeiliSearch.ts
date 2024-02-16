@@ -1,7 +1,7 @@
 import * as crypto from 'crypto';
 import { MeiliSearch } from 'meilisearch';
 import sanitizeHtml from 'sanitize-html';
-import { type Document, type Pagination, type SearchKeys } from './types';
+import { type Document, type Pagination } from './types';
 import AppConf from '../conf/app';
 
 const host = AppConf.db.host;
@@ -10,12 +10,12 @@ const indexName = AppConf.db.index;
 if (!host || !apiKey || !indexName) {
   throw new Error('Environment variables are required');
 }
-const filterables: SearchKeys = { site: 'site', date: 'timestamp', category: 'category' };
+const filterables = ['site', 'date', 'category', 'timestamp'];
 const pageLimit = 24;
 const client = new MeiliSearch({ host, apiKey });
 const index = client.index(indexName);
 index.updateSortableAttributes(['timestamp', 'site']);
-index.updateFilterableAttributes(Object.values(filterables));
+index.updateFilterableAttributes(filterables);
 
 export type StatsType = {
   numberOfDocuments: number;
@@ -58,21 +58,13 @@ export const parseKeyword = (keywords: string[]): string => {
 
 export const parseFilter = (params: {[key: string]: any}): string => {
   const filters: string[] = [];
-  for (const [key, name] of Object.entries(filterables)) {
+  filterables.forEach((key) => {
     if (params[key]) {
       const param = params[key];
-      if (key === 'date') {
-        const date = new Date(param + ' 00:00:00');
-        //日本時間にする
-        const timestamp = date.getTime();
-        const nextdayTimestamp = timestamp + (24 * 60 * 60 * 1000);
-        filters.push(`${name} > ${timestamp} AND ${name} < ${nextdayTimestamp}`);
-      } else {
-        const value = decodeURIComponent(param);
-        filters.push(`${name} = "${value}"`);
-      }
+      const value = decodeURIComponent(param);
+      filters.push(`${key} = "${value}"`);
     }
-  }
+  });
   return filters.join(' AND ');
 }
 
@@ -80,7 +72,7 @@ export const convertToDocument = (item: Feed, siteTitle: string, siteUrl: string
   const pubDate = item.pubDate ?? item.date;
   return {
     // linkのURLをmd5でハッシュ化してidとする
-    id: crypto.createHash('md5').update(item.link).digest('hex'),
+    id: item.id,
     title: item.title,
     link: item.link,
     date: new Date(pubDate).toISOString(),
@@ -88,7 +80,6 @@ export const convertToDocument = (item: Feed, siteTitle: string, siteUrl: string
     image: parseImage(item['content:encoded']),
     category: item.category ?? item['dc:subject'] ?? '',
     site: siteTitle,
-    home: siteUrl,
     timestamp: new Date(pubDate).getTime(),
   };
 }
@@ -104,6 +95,11 @@ export const convertToPagination = (results: any): Pagination => {
     next: (current < last) ? current + 1 : 0,
     last: last,
   };
+}
+
+export const insert = async (item: any): Promise<boolean> => {
+  await index.addDocuments([item as Object]).catch((err) => console.log(err));
+  return true;
 }
 
 export const upsert = async (item: Feed, siteTitle: string, siteUrl: string) => {
@@ -143,6 +139,22 @@ export const stats = async () => {
   }
 };
 
+export const getAll = async (params: any, keywordString?:string): Promise<any> => {
+  'use server'
+  try {
+    const options: any = { sort: ['timestamp:desc'], attributesToSearchOn: ['title', 'intro', 'category'] };
+    Object.keys(params).forEach((key:string) => {
+      options[key] = params[key];
+    });
+    const results = await index.search(keywordString, options);
+    return results;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+
 export const find = async (params?: any): Promise<Pagination | null> => {
   'use server'
   try {
@@ -152,11 +164,11 @@ export const find = async (params?: any): Promise<Pagination | null> => {
     if (isNaN(current)) {
       throw new Error('Invalid page number');
     }
-    const options: any = { page: current, hitsPerPage: pageLimit, sort: ['timestamp:desc'], attributesToSearchOn: ['title', 'intro', 'category'] };
+    const options: any = { page: current, hitsPerPage: pageLimit};
     if (filterString) {
       options.filter = [filterString];
     }
-    const results = await index.search(keywordString, options);
+    const results = await getAll(options, keywordString);
     return convertToPagination(results);
   } catch (error) {
     console.error(error);
@@ -164,7 +176,38 @@ export const find = async (params?: any): Promise<Pagination | null> => {
   }
 };
 
-export const get = async (id: string): Promise<Document | null> => {
+export const findDaily = async (targetDate: string): Promise<any | null> => {
+  'use server'
+  try {
+    const filterString = parseFilter({date: targetDate});
+    const options: any = { filter:filterString, limit: 1000};
+    const results = await getAll(options);
+    if (!results || results.hits.length === 0) {
+      return null;
+    }
+    const nextTimestamp = results.hits[0].timestamp;
+    const nextoption = { filter:`timestamp > ${nextTimestamp}` , limit: 1, sort: ['timestamp:asc']};
+    const next = await getAll(nextoption);
+
+    const previousTimestamp = results.hits[results.hits.length - 1].timestamp;
+    const previousoption = { filter:`timestamp < ${previousTimestamp}` , limit: 1, sort: ['timestamp:desc']};
+    const previous = await getAll(previousoption);
+
+    const latestDate = await lastPubDate();
+
+    return {
+      ids: results.hits.map((hit: any) => hit.id),
+      next: (next.hits.length === 0 || latestDate === next.hits[0].date) ? null : next.hits[0].date,
+      previous: (previous.hits.length > 0) ? previous.hits[0].date : null,
+    };
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+
+export const get = async (id: number): Promise<Document | null> => {
   'use server'
   try {
     const result = await index.getDocument(id);
@@ -190,3 +233,23 @@ export const sites = async (): Promise<string[]> => {
     return [];
   }
 };
+
+export const lastPubDate = async (): Promise<string> => {
+  'use server'
+  //最新のdateを取得
+  const results = await index.search('', {limit:1, sort: ['timestamp:desc']});
+  const item = results.hits[0];
+  return item.date;
+}
+
+export const firstPubDate =  async (): Promise<string> => {
+  'use server'
+  //最新のdateを取得
+  const results = await index.search('', {limit:1, sort: ['timestamp:asc']});
+  const item = results.hits[0];
+  return item.date;
+}
+
+export const deleteIndex = async (target:string) => {
+  client.deleteIndexIfExists(target);
+}
