@@ -2,6 +2,7 @@ import sqlite3 from 'sqlite3';
 import { AppConf } from '../conf/app';
 import fs from 'fs';
 import { tokenize } from "kuromojin";
+import exp from 'constants';
 
 if (!fs.existsSync(AppConf.sqlite)) {
     throw new Error('データベースファイルが見つかりません。');
@@ -79,13 +80,18 @@ export async function siteByRss(rss:string): Promise<any> {
     return site??null;
 }
 
-export async function addSite(rss:string, name:string, url:string) {
-    await run(`INSERT INTO sites (rss, name, url, frequency) VALUES(?,?,?,60)`, [rss, name, url]);
+export async function addSite(rss:string, name:string, url:string, frequency:number = 60): Promise<any> {
+    await run(`INSERT INTO sites (rss, name, url, frequency) VALUES(?,?,?,?)`, [rss, name, url, frequency]);
     const site = await get(`SELECT * from sites WHERE rss = ?`, [rss]);
     return site;
 }
 
 export async function updateSite(value:string|number, key:string, id:number):Promise<boolean>{
     await run (`UPDATE sites SET ${key} = ? WHERE id = ?`, [value, id]);
+    return true;
+}
+
+export async function emptySites():Promise<boolean>{
+    await run('DELETE FROM sites');
     return true;
 }

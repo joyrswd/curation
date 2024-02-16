@@ -4,7 +4,6 @@ import * as Sqlite from '../lib/Sqlite';
 import {prompt} from 'enquirer';
 import { loadFeed, addItems } from '../lib/RssLoader';
 import {type SiteType} from '../lib/types';
-import { Console } from 'console';
 
 (async ()=>{
 
