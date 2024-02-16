@@ -60,12 +60,19 @@ graph TB
     npm install
     ```
 5. app/_/conf/app.ts.exampleをコピーしてapp.tsファイルを作成し、各種値を設定する
-6. app/_/conf/rss.ts.exampleをコピーしてrss.tsファイルを作成し、各種値を設定する
-7. 下記コマンドでRSS収集バッチと開発ウェブサーバーを起動させる
+6. 下記コマンドを実行して、データベースの初期設定を行う
+    ```bash
+    npm run batch:init
+    ```
+7. 下記コマンドを実行して、対話形式でのRSS登録を行う
+    ```bash
+    npm run batch:manage
+    ```
+8. 下記コマンドでRSS収集バッチと開発ウェブサーバーを起動させる
     ```bash
     nohup sh dev-starter.sh &
     ```
-8. ブラウザでサイトのトップページへアクセスし表示を確認する  
+9. ブラウザでサイトのトップページへアクセスし表示を確認する  
 
 以上
 
@@ -82,15 +89,16 @@ graph TB
 │   │   └── log             : ログファイルを格納するディレクトリ
 │   ├── @baseline           : （オプション）コンテンツの直下への表示用ディレクトリ
 │   ├── @bottom             : （オプション）ページ最下部への表示用ディレクトリ
-│   ├── @children/[[...slug]]
-│   │   └── page.tsx        : メインコンテンツを表示するためのReactコンポーネント
+│   ├── @children
+|   |   ├── [[...slug]]
+|   |   |   └── page.tsx    : メインコンテンツを表示するためのReactコンポーネント
+│   |   └── daily/[date]
+│   │       └── page.tsx    : 日別ページを表示するためのReactコンポーネント
 │   ├── @top                : （オプション）コンテンツの直上への表示用ディレクトリ
 │   ├── api
 │   │   ├── daily
 │   │   │   └── route.ts    : 日別一覧のルーティングを定義するファイル
 │   │   └── route.ts        : APIのルーティングを定義するファイル
-│   ├── daily/[date]
-│   │   └── page.tsx        : 日別ページを表示するためのReactコンポーネント
 │   ├── global.css          : 全体に適用するスタイルシート
 │   └── layout.tsx          : 全体のレイアウトを定義するReactコンポーネント
 .
@@ -112,14 +120,27 @@ https://nextjs.org/docs/app/building-your-application/routing/dynamic-routes
 <details>
 <summary>オプション（@baseline, @bottom, @top）</summary>  
 
-    オプションのディレクトリには空白を表示させるファイルが配置してあり、
-    そのファイル以外はgit管理外となるようにしています。  
+    オプションのディレクトリには空白を表示させるdefault.tsxファイルと  
+    [[...slug]]ディレクトリが配置してあります。
 
-    本番環境など特定の環境で表示したいコンテンツ（広告など）がある場合、
-    page.tsxファイル(git管理外)を設置するとその環境で表示されるようになります。  
+    本番など特定の環境で表示したいコンテンツ（広告など）がある場合、  
+    [[...slug]]ディレクトリ配下にpage.tsxファイル(git管理外)を設置すると、  
+    その環境で表示されるようになります。  
 
     またpage.tsx内でimport "./xxx.css"のようにスタイルシートを呼ぶことで、
     スタイルの上書きを行うことも可能です。
+</details>
+
+<details>
+<summary>コンテンツ追加について</summary>  
+
+    @children配下のgit管理対象ファイルは次の通りです。  
+    - 直下のファイル  
+    - [[...slug]]ディレクトリ配下のファイル  
+    - dailyディレクトリ配下のファイル  
+    上記以外のディレクトリはgit管理対象外となるため、  
+    そちらへは任意のファイルを追加可能です。
+
 </details>
 
 

@@ -24,6 +24,11 @@ export async function sites(): Promise<any[]>{
     return all('SELECT * FROM sites where skip = 0');
 }
 
+export async function siteStats(): Promise<any[]>{
+    return all('SELECT sites.*, (SELECT count(id) FROM feeds WHERE site_id = sites.id) AS items FROM sites');
+}
+
+
 export async function afterInsert(callback: Function) {
     db.on('insert', async (record, resolve) => {
         await callback(record);

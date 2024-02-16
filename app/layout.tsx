@@ -8,7 +8,7 @@ import Footer from '@/_/components/footer'
 // either Static metadata
 export const metadata: Metadata = {
   title: {
-    template: '%s | ' + (AppConf.appName??''),
+    template: (AppConf.appName??'') + ' %s',
     default : AppConf.appName??'Title'
   },
   description: AppConf.meta.description,
