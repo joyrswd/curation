@@ -1,3 +1,7 @@
 #!/usr/bin/env node
-import {stats, deleteIndex} from '../lib/MeiliSearch';
-stats();
+import {stats} from '../lib/MeiliSearch';
+import {siteStats} from '../lib/Sqlite';
+(async () => {
+    await stats();
+    console.log(await siteStats());
+})();
