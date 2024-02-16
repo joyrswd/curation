@@ -1,0 +1,36 @@
+id: string;
+    RSS1: item.link,
+    RSS2: item.link,
+    ATOM: entry.link[href]
+title: string;
+    RSS1: item.title
+    RSS2: item.title
+    ATOM: entry.title
+link: string;
+    RSS1: item.link,
+    RSS2: item.link,
+    ATOM: entry.link[href]
+date: string;
+    RSS1: item.date
+    RSS2: item.pubDate
+    ATOM: entry.issued
+intro: string;
+    RSS1: item.content:encoded | null
+    RSS2: item.content:encoded | null
+    ATOM: entry.content | null
+image: string;
+    RSS1: item.content:encoded | null
+    RSS2: item.content:encoded | null
+    ATOM: entry.content | null
+category: string;
+    RSS1: item.dc:subject
+    RSS2: item.category
+    ATOM: entry.dc:subject
+site: string;
+    RSS1: title
+    RSS2: title
+    ATOM: title
+home: string;
+    RSS1: link
+    RSS2: link
+    ATOM: link[rel="alternate"][href]    

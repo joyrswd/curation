@@ -11,7 +11,9 @@ export const AppConf = {
         key: 'YourMeiliMasterKey', // MeiliSearchのマスターキー
         index: 'feed', // MeiliSearchのインデックス名
     },
+    sqlite: process.cwd() + '/database/feed.db', // SQLite3のデータベースファイルのパス
     logDir: __dirname + '/../log', // ログファイルの保存先
+    sleeping: [0, 6], // クローラーのスリープ時間(時)
 }
 
 export default AppConf;

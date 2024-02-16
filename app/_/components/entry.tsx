@@ -3,18 +3,23 @@ import Image from 'next/image'
 import {get} from '@/_/lib/MeiliSearch';
 import {type Document} from '@/_/lib/types';
 
-export const EntryContainer = async ({ id }: { id: string }) => {
+export const EntryContainer = async ({ id }: { id: number }) => {
     const record = await get(id);
     if (!record) return null;
     return <EntryPresenter record={record} />;
 };
 
 
+export const getLink = (date:string) :string => {
+    const today = new Date().toLocaleDateString('ja-JP', {year:'numeric', month: '2-digit', day: '2-digit'}).replaceAll('/', '-');
+    return (new Date(today) <= new Date(date)) ? '/?date=' + date : '/daily/' + date;
+}
+
 export const EntryPresenter = ({ record }: { record: Document }) => {
     const month = new Date(record.date).toLocaleString('en-us', { month: 'short' });
-    const day = new Date(record.date).toLocaleString('en-us', { day: '2-digit' });
-    const time = new Date(record.date).toLocaleString('ja-JP', { hour: '2-digit', minute: '2-digit' });
-    const date = new Date(record.date).toLocaleString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '-');
+    const day = record.date.split('-')[2];
+    const time = new Date(record.timestamp).toLocaleString('ja-JP', { hour: '2-digit', minute: '2-digit' });
+    const href = getLink(record.date);
     return (
         <div className="w-full lg:max-w-sm mx-1 mb-2">
             <div className="h-full flex flex-col p-4 md:pb-9 bg-gradient-to-t from-white via-neutral-200/75 via-10% to-white to-50%">
@@ -30,7 +35,7 @@ export const EntryPresenter = ({ record }: { record: Document }) => {
                 </div>
                 <div className="self-end w-full flex md:items-end text-xs mt-1">
                     <div className='w-12 mr-3 text-center'>
-                        <a href={'/?date=' + date} data-testid="date" className='flex md:flex-col'>
+                        <a href={href} data-testid="date" className='flex md:flex-col'>
                             <span className="text-gray-500 md:pb-2 md:mb-2 md:border-b-2 border-gray-400/50" data-testid="month">{month}</span>
                             <span className="font-medium title-font ml-1 md:ml-0 md:text-gray-800 md:text-lg md:leading-none" data-testid="day">{day}</span>
                         </a>

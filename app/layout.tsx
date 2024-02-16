@@ -7,18 +7,21 @@ import Footer from '@/_/components/footer'
 
 // either Static metadata
 export const metadata: Metadata = {
-  title: AppConf.appName,
+  title: {
+    template: (AppConf.appName??'') + ' %s',
+    default : AppConf.appName??'Title'
+  },
   description: AppConf.meta.description,
   keywords: AppConf.meta.keywords,
 }
 
 export default function RootLayout({
-  main,
+  children,
   top,
   baseline,
   bottom,
 }: {
-  main: React.ReactNode
+  children: React.ReactNode
   top: React.ReactNode
   baseline: React.ReactNode
   bottom: React.ReactNode
@@ -30,12 +33,12 @@ export default function RootLayout({
           {top}
           <main className="container px-5 py-12 mx-auto">
             <div className="flex flex-wrap -mx-4 -my-8 justify-center">
-                {main}
+                {children}
             </div>
           </main>
           {baseline}
           <footer>
-            <Footer title={AppConf.appName} />
+              <Footer title={AppConf.appName} />
           </footer>
           {bottom}
         </div>
