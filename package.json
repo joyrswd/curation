@@ -13,7 +13,7 @@
     "batch:crawl": "ts-node ./app/_/batch/crawler.ts",
     "batch:sitemap": "ts-node ./app/_/batch/sitemap.ts",
     "batch:init": "ts-node ./app/_/batch/initdb.ts",
-    "batch:manage": "ts-node ./app/_/batch/sitemanage.ts"
+    "batch:manage": "ts-node ./app/_/batch/sitemanager.ts"
   },
   "dependencies": {
     "@next/third-parties": "^14.1.0",
