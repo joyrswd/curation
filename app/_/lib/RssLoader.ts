@@ -57,8 +57,8 @@ export function convert(item: any): any {
         title: item.title,
         link: item.link,
         date: new Date(pubDate).toLocaleDateString('ja-JP', {year:'numeric', month: '2-digit', day: '2-digit'}).replaceAll('/', '-'),
-        intro: parseIntro(item['content:encoded']??item['description']),
-        image: parseImage(item['content:encoded']??item['description']),
+        intro: parseIntro(item['content:encoded']??item['content']),
+        image: parseImage(item['content:encoded']??item['content']),
         category: item.category ?? item['dc:subject'] ?? '',
         timestamp: new Date(pubDate).getTime(),
     };
