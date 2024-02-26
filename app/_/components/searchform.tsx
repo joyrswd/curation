@@ -45,7 +45,7 @@ export function FormPresenter({ action }: { action: string | ((formData: FormDat
             </p>
             <p>
                 <input type="date" data-testid="date" defaultValue={dateValue} name="date" max={today} className='border border-gray-300 bg-white h-7 rounded-lg text-sm focus:outline-none' />
-                <input type="text" data-testid="site" defaultValue={siteValue} list="site-name" placeholder="掲載元" name='site' className='border border-gray-300 bg-white h-7 rounded-lg text-sm focus:outline-none' />
+                <input type="text" data-testid="site" defaultValue={siteValue} list="site-name" placeholder="掲載元" name='site' className='border border-gray-300 bg-white h-7 rounded-lg text-sm focus:outline-none' autoComplete="off" />
             </p>
             <p><button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold text-xs p-2 rounded whitespace-nowrap">検索</button></p>
         </form>
