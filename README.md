@@ -6,6 +6,8 @@
 Next.js（Typescript, React）入門のため作成しました。
 DBにはMeiliSearchを使用しています。
 
+参考サイト https://rss.ai-rticle.site/
+
 ## 特徴
 
 - フィードをバッチ処理で自動収集
